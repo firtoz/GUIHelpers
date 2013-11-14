@@ -528,6 +528,10 @@ namespace toxicFork.GUIHelpers {
             Handles.color = color;
         }
 
+        public DisposableHandleColor() {
+            previousColor = GUI.color;
+        }
+
         public void Dispose() {
             Handles.color = previousColor;
         }
