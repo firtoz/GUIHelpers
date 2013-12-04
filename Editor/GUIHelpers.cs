@@ -3,10 +3,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace toxicFork.GUIHelpers {
     public class GUIHelpers {
         public const int IndentMultiplier = 15;
+
+        public static void RecordUndo(String action, params Object[] objects)
+        {
+            Undo.RecordObjects(objects, action);
+        }
 
         public static T PropertyToEnum<T>(SerializedProperty property) {
             return (T) Enum.Parse(typeof (T), property.enumNames[property.enumValueIndex]);
