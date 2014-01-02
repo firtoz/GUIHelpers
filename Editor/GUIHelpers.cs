@@ -457,7 +457,9 @@ namespace toxicFork.GUIHelpers {
                             EditorApplication.update += Update;
                         }
                         else {
+// ReSharper disable DelegateSubtraction
                             EditorApplication.update -= Update;
+// ReSharper restore DelegateSubtraction
                         }
                     }
                     updating_ = value;
