@@ -277,10 +277,10 @@ namespace toxicFork.GUIHelpers {
         }
     }
 
-    public class Indent : IDisposable {
+    public class DisposableEditorGUIIndent : IDisposable {
         private readonly int offset;
 
-        public Indent(int i = 1) {
+        public DisposableEditorGUIIndent(int i = 1) {
             offset = i;
             EditorGUI.indentLevel += offset;
         }
