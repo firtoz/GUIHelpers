@@ -9,8 +9,7 @@ namespace toxicFork.GUIHelpers {
     public class GUIHelpers {
         public const int IndentMultiplier = 15;
 
-        public static void RecordUndo(String action, params Object[] objects)
-        {
+        public static void RecordUndo(String action, params Object[] objects) {
             Undo.RecordObjects(objects, action);
         }
 
@@ -26,26 +25,26 @@ namespace toxicFork.GUIHelpers {
             return false;
         }
 
-        public static bool CustomHandleButton(int controlID, Vector3 buttonPosition, float buttonSize, Texture2D texture, Texture2D hotTexture = null) {
+        public static bool CustomHandleButton(int controlID, Vector3 buttonPosition, float buttonSize, Texture2D texture,
+            Texture2D hotTexture = null) {
             return CustomHandleButton(controlID, buttonPosition, buttonSize, texture, hotTexture, Color.white);
         }
 
-        public static bool CustomHandleButton(int controlID, Vector3 buttonPosition, float buttonSize, Texture2D texture, Color color) {
+        public static bool CustomHandleButton(int controlID, Vector3 buttonPosition, float buttonSize, Texture2D texture,
+            Color color) {
             return CustomHandleButton(controlID, buttonPosition, buttonSize, texture, null, color);
         }
 
-        public static bool CustomHandleButton(int controlID, Vector3 buttonPosition, float buttonSize, Texture2D texture, Texture2D hotTexture, Color color)
-        {
+        public static bool CustomHandleButton(int controlID, Vector3 buttonPosition, float buttonSize, Texture2D texture,
+            Texture2D hotTexture, Color color) {
             float distance = HandleUtility.DistanceToRectangle(buttonPosition, Quaternion.identity, buttonSize*0.5f);
             HandleUtility.AddControl(controlID, distance);
             switch (Event.current.type) {
                 case EventType.repaint:
-                    using (DisposableGUITextureDrawer drawer = new DisposableGUITextureDrawer(texture, hotTexture))
-                    {
-                        
+                    using (DisposableGUITextureDrawer drawer = new DisposableGUITextureDrawer(texture, hotTexture)) {
                         using (
                             new DisposableMaterialProperty(drawer.Material, "_Hot",
-                                                           GUIUtility.hotControl == controlID && distance <= 0 ? 1f : 0f)
+                                GUIUtility.hotControl == controlID && distance <= 0 ? 1f : 0f)
                             ) {
                             using (new DisposableMaterialColor(drawer.Material, color)) {
                                 drawer.DrawSquare(buttonPosition, Quaternion.identity, buttonSize);
@@ -113,7 +112,6 @@ namespace toxicFork.GUIHelpers {
     }
 
     public class DisposableMaterialProperty : IDisposable {
-
         private readonly System.Object value;
         private readonly Material material;
         private readonly string propertyName;
@@ -121,9 +119,7 @@ namespace toxicFork.GUIHelpers {
         private readonly Type type;
 
 
-        public DisposableMaterialProperty() {
-            
-        }
+        public DisposableMaterialProperty() {}
 
         public DisposableMaterialProperty(Material material, string propertyName, float floatVal) {
             this.material = material;
@@ -140,11 +136,10 @@ namespace toxicFork.GUIHelpers {
         public void Dispose() {
             if (value != null) {
                 if (type == typeof (float)) {
-                    material.SetFloat(propertyName, ((float?)value).Value);
+                    material.SetFloat(propertyName, ((float?) value).Value);
                 }
             }
         }
-        
     }
 
     public class DisposableMaterialColor : IDisposable {
@@ -163,8 +158,7 @@ namespace toxicFork.GUIHelpers {
     }
 
     public abstract class Drawer : IDisposable {
-        public virtual void Dispose() {
-        }
+        public virtual void Dispose() {}
 
         public void DrawSquare(Vector3 position, Quaternion rotation, float size, Material material) {
             GL.PushMatrix();
@@ -183,14 +177,12 @@ namespace toxicFork.GUIHelpers {
             get {
                 return _guiMaterial ??
                        (_guiMaterial =
-                        new Material(Shader.Find("GUI Helpers/GUI")) {hideFlags = HideFlags.HideAndDontSave});
+                           new Material(Shader.Find("GUI Helpers/GUI")) {hideFlags = HideFlags.HideAndDontSave});
             }
         }
 
         public Material Material {
-            get {
-                return guiMaterial;
-            }
+            get { return guiMaterial; }
         }
 
         private readonly Texture2D texture;
@@ -204,7 +196,8 @@ namespace toxicFork.GUIHelpers {
             this.scale = scale;
         }
 
-        public DisposableGUITextureDrawer(Texture2D texture, Texture2D hotTexture, Quaternion rotation = default(Quaternion), float scale = 1f) {
+        public DisposableGUITextureDrawer(Texture2D texture, Texture2D hotTexture,
+            Quaternion rotation = default(Quaternion), float scale = 1f) {
             this.rotation = rotation;
             this.texture = texture;
             this.hotTexture = hotTexture;
@@ -213,8 +206,7 @@ namespace toxicFork.GUIHelpers {
 
         public void DrawSquare(Vector3 position, Quaternion rotation, float size) {
             guiMaterial.SetTexture(0, texture);
-            if (hotTexture != null && guiMaterial.HasProperty("_HotTex"))
-            {
+            if (hotTexture != null && guiMaterial.HasProperty("_HotTex")) {
                 guiMaterial.SetTexture("_HotTex", hotTexture);
             }
             DrawSquare(position, this.rotation*rotation, scale*size, guiMaterial);
@@ -259,14 +251,13 @@ namespace toxicFork.GUIHelpers {
         private readonly ZeroIndent indentReset;
 
         public FixedWidthLabel(string label)
-            : this(new GUIContent(label)) {
-        }
+            : this(new GUIContent(label)) {}
 
         public FixedWidthLabel(GUIContent label) {
             EditorGUILayout.BeginHorizontal();
             EditorGUILayout.LabelField(label,
-                                       GUILayout.Width(GUI.skin.label.CalcSize(label).x +
-                                                       GUIHelpers.IndentMultiplier*Mathf.Max(0, EditorGUI.indentLevel)));
+                GUILayout.Width(GUI.skin.label.CalcSize(label).x +
+                                GUIHelpers.IndentMultiplier*Mathf.Max(0, EditorGUI.indentLevel)));
 
             indentReset = new ZeroIndent();
         }
@@ -346,26 +337,26 @@ namespace toxicFork.GUIHelpers {
             //disposables.Push(new AreaGroup(new Rect(0, 0, maxWidth, 200)));
 
             disposables.Push(new CustomViewport(new Rect(0, 0, screenRect.width, screenRect.height),
-                                                new Rect(offset, 0, screenRect.width - offset, screenRect.height)));
+                new Rect(offset, 0, screenRect.width - offset, screenRect.height)));
 
             disposables.Push(new CustomGUIMatrix(Matrix4x4.TRS(new Vector3(-offset, 0, 0), Quaternion.identity,
-                                                               new Vector3(1, 1, 1))));
+                new Vector3(1, 1, 1))));
 
             using (new DisposableHandleColor(Color.red)) {
                 Handles.DrawLine(new Vector3(maxWidth + 1, 0, 0),
-                                 new Vector3(maxWidth + 1, screenRect.height, 0));
+                    new Vector3(maxWidth + 1, screenRect.height, 0));
                 Handles.DrawLine(new Vector3(0, 0, 0),
-                                 new Vector3(maxWidth + 1, 0, 0));
+                    new Vector3(maxWidth + 1, 0, 0));
                 Handles.DrawLine(new Vector3(0, screenRect.height, 0),
-                                 new Vector3(maxWidth + 1, screenRect.height, 0));
+                    new Vector3(maxWidth + 1, screenRect.height, 0));
             }
 
             GUI.DrawTexture(new Rect(0, 0, maxWidth, screenRect.height),
-                            state.background, ScaleMode.ScaleAndCrop);
+                state.background, ScaleMode.ScaleAndCrop);
 
             using (new DisposableHandleColor(Color.green)) {
                 Handles.DrawLine(new Vector3(0, 0, 0),
-                                 new Vector3(0, screenRect.height, 0));
+                    new Vector3(0, screenRect.height, 0));
             }
 
             if (scrollable) {
@@ -567,8 +558,7 @@ namespace toxicFork.GUIHelpers {
             }
         }
 
-        public virtual void Cleanup() {
-        }
+        public virtual void Cleanup() {}
     }
 
     public class CustomViewport : DisposableHelper {
@@ -577,9 +567,9 @@ namespace toxicFork.GUIHelpers {
             disposables.Push(new GUIGroup(new Rect(0, 0, viewport.width, viewport.height)));
             disposables.Push(new GUILayoutArea(new Rect(-viewport.x, -viewport.y, area.width, area.height)));
             disposables.Push(
-                             new CustomGUIMatrix(Matrix4x4.TRS(new Vector3(viewport.x, viewport.y, 0),
-                                                               Quaternion.identity,
-                                                               Vector3.one)));
+                new CustomGUIMatrix(Matrix4x4.TRS(new Vector3(viewport.x, viewport.y, 0),
+                    Quaternion.identity,
+                    Vector3.one)));
         }
     }
 
@@ -716,7 +706,7 @@ namespace toxicFork.GUIHelpers {
     public class RotatedGUI : DisposableHelper {
         private RotatedGUI(Vector2 position, Vector2 offset = new Vector2()) {
             disposables.Push(new CustomGUIMatrix(Matrix4x4.TRS(position + offset, Quaternion.identity, Vector3.one),
-                                                 true));
+                true));
         }
 
         public RotatedGUI(Vector2 position, float rotation, Vector2 offset = new Vector2())
