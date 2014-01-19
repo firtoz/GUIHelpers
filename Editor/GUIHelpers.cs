@@ -532,12 +532,12 @@ namespace toxicFork.GUIHelpers {
         private readonly Color previousColor;
 
         public DisposableHandleColor(Color color) {
-            previousColor = GUI.color;
+            previousColor = Handles.color;
             Handles.color = color;
         }
 
         public DisposableHandleColor() {
-            previousColor = GUI.color;
+            previousColor = Handles.color;
         }
 
         public void Dispose() {
