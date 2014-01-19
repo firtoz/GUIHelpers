@@ -204,6 +204,100 @@ namespace toxicFork.GUIHelpers {
         }
     }
 
+    internal interface IGUIDrawer {
+        void Draw(int controlID, Vector2 position, float size, float rotation);
+
+        float GetDistance(Vector2 position, float size, float rotation);
+    }
+
+    public abstract class DisposableHandleDrawerBase : IGUIDrawer, IDisposable {
+        protected abstract void DoDraw(int controlID, Vector2 position, float size, float rotation);
+
+        public void Draw(int controlID, Vector2 position, float size, float rotation) {
+            if (Event.current.type == EventType.repaint) {
+                DoDraw(controlID, position, size, rotation);
+            }
+        }
+
+        public abstract float GetDistance(Vector2 position, float size, float rotation);
+
+        public void Dispose() {}
+    }
+
+    public abstract class DisposableHandleDrawerColorBase : DisposableHandleDrawerBase {
+        protected readonly Color baseColor;
+        protected readonly Color hoverColor;
+        protected readonly Color activeColor;
+
+        protected DisposableHandleDrawerColorBase() {
+            baseColor = Color.white;
+            activeColor = baseColor;
+            hoverColor = baseColor;
+        }
+
+        protected DisposableHandleDrawerColorBase(Color baseColor) {
+            this.baseColor = baseColor;
+            activeColor = baseColor;
+            hoverColor = baseColor;
+        }
+
+        protected DisposableHandleDrawerColorBase(Color baseColor, Color activeColor) {
+            this.baseColor = baseColor;
+            this.activeColor = activeColor;
+            hoverColor = baseColor;
+        }
+
+        protected DisposableHandleDrawerColorBase(Color baseColor, Color activeColor, Color hoverColor) {
+            this.baseColor = baseColor;
+            this.activeColor = activeColor;
+            this.hoverColor = hoverColor;
+        }
+    }
+
+    public class DisposableCircleDrawer : DisposableHandleDrawerColorBase {
+        public DisposableCircleDrawer(Color baseColor)
+            : base(baseColor) {}
+
+        public DisposableCircleDrawer(Color baseColor, Color activeColor)
+            : base(baseColor, activeColor) {}
+
+        public DisposableCircleDrawer(Color baseColor, Color activeColor, Color hoverColor)
+            : base(baseColor, activeColor, hoverColor) {}
+
+        protected override void DoDraw(int controlID, Vector2 position, float size, float rotation) {
+            Color color = GUIUtility.hotControl == controlID ? activeColor : baseColor;
+            using (new DisposableHandleColor(color)) {
+                Handles.CircleCap(controlID, position, Quaternion.identity, size);
+            }
+        }
+
+        public override float GetDistance(Vector2 position, float size, float rotation) {
+            return HandleUtility.DistanceToCircle(position, size);
+        }
+    }
+
+    public class DisposableRectangleDrawer : DisposableHandleDrawerColorBase {
+        public DisposableRectangleDrawer(Color baseColor)
+            : base(baseColor) {}
+
+        public DisposableRectangleDrawer(Color baseColor, Color activeColor)
+            : base(baseColor, activeColor) {}
+
+        public DisposableRectangleDrawer(Color baseColor, Color activeColor, Color hoverColor)
+            : base(baseColor, activeColor, hoverColor) {}
+
+        protected override void DoDraw(int controlID, Vector2 position, float size, float rotation) {
+            Color color = GUIUtility.hotControl == controlID ? activeColor : baseColor;
+            using (new DisposableHandleColor(color)) {
+                Handles.RectangleCap(controlID, position, GUIHelpers.Rotate2D(rotation), size);
+            }
+        }
+
+        public override float GetDistance(Vector2 position, float size, float rotation) {
+            return HandleUtility.DistanceToRectangle(position, GUIHelpers.Rotate2D(rotation), size);
+        }
+    }
+
     public class DisposableGUITextureDrawer : Drawer {
         private static Material _guiMaterial;
 
