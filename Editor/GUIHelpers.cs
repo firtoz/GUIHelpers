@@ -110,10 +110,61 @@ namespace toxicFork.GUIHelpers {
             EditorGUIUtility.AddCursorRect(new Rect(0, 0, Screen.width, Screen.height), cursor, controlID);
         }
 
-        public static void AngleSlider(int controlID, BaseGUIDrawer drawer, Vector3 center, float angle,
+        public class AngleSliderInfo {
+            public float dragAngle;
+        }
+
+        public static float AngleSlider(int controlID, DisposableHandleDrawerBase drawer, Vector2 center, float angle,
             float distanceFromCenter, float handleSize) {
             Vector2 handlePosition = center + Rotated2DVector(angle)*distanceFromCenter;
-            drawer.Draw(controlID, handlePosition, handleSize, -angle);
+            float distanceFromDrawer = drawer.GetDistance(handlePosition, handleSize, angle);
+            HandleUtility.AddControl(controlID, distanceFromDrawer);
+
+            AngleSliderInfo info = StateObject.Get<AngleSliderInfo>(controlID);
+
+            Vector2 mousePosition = Event.current.mousePosition;
+            Vector2 worldMousePosition = HandlePointToWorld(mousePosition);
+
+            float mouseAngle = GetAngle(worldMousePosition - center);
+
+            if (Event.current.type == EventType.repaint) {
+                drawer.Draw(controlID, handlePosition, handleSize, angle);
+            }
+
+            if (GUIUtility.hotControl == controlID) {
+                switch (Event.current.type)
+                {
+                    case EventType.mouseUp:
+                        Event.current.Use();
+                        GUIUtility.hotControl = 0;
+                        break;
+                    case EventType.mouseMove:
+                        Event.current.Use();
+                        Debug.Log("mouse moved");
+                        break;
+                    case EventType.mouseDrag:
+                        Event.current.Use();
+
+                        angle += Mathf.DeltaAngle(info.dragAngle, mouseAngle);
+                        info.dragAngle = mouseAngle;
+                        
+                        GUI.changed = true;
+                        break;
+                }
+            }
+            else if(GUIUtility.hotControl == 0) {
+                switch (Event.current.type) {
+                        case EventType.mouseDown:
+                        if (distanceFromDrawer <= Mathf.Epsilon) {
+                            info.dragAngle = mouseAngle;
+                            Event.current.Use();
+                            GUIUtility.hotControl = controlID;
+                        }
+                        break;
+                }
+            }
+
+            return angle;
         }
 
         public static Vector2 Transform2DPoint(Transform transform, Vector2 point) {
@@ -140,8 +191,13 @@ namespace toxicFork.GUIHelpers {
             return Quaternion.AngleAxis(angle, Vector3.forward);
         }
 
-        public static Vector3 Rotated2DVector(float angle) {
+        public static Vector2 Rotated2DVector(float angle) {
             return Rotate2D(angle)*Vector3.right;
+        }
+
+        public static Vector3 HandlePointToWorld(Vector2 mousePosition)
+        {
+            return HandleUtility.GUIPointToWorldRay(mousePosition).origin;
         }
     }
 
