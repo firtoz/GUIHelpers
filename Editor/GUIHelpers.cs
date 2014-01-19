@@ -109,6 +109,40 @@ namespace toxicFork.GUIHelpers {
         public static void SetEditorCursor(MouseCursor cursor, int controlID) {
             EditorGUIUtility.AddCursorRect(new Rect(0, 0, Screen.width, Screen.height), cursor, controlID);
         }
+
+        public static void AngleSlider(int controlID, BaseGUIDrawer drawer, Vector3 center, float angle,
+            float distanceFromCenter, float handleSize) {
+            Vector2 handlePosition = center + Rotated2DVector(angle)*distanceFromCenter;
+            drawer.Draw(controlID, handlePosition, handleSize, -angle);
+        }
+
+        public static Vector2 Transform2DPoint(Transform transform, Vector2 point) {
+            Vector2 scaledPoint = Vector2.Scale(point, transform.lossyScale);
+            float angle = transform.rotation.eulerAngles.z;
+            Vector2 rotatedScaledPoint = Quaternion.AngleAxis(angle, Vector3.forward)*scaledPoint;
+            Vector2 translatedRotatedScaledPoint = (Vector2) transform.position + rotatedScaledPoint;
+            return translatedRotatedScaledPoint;
+        }
+
+        public static Vector2 InverseTransform2DPoint(Transform transform, Vector2 translatedRotatedScaledPoint) {
+            Vector2 rotatedScaledPoint = translatedRotatedScaledPoint - (Vector2) transform.position;
+            float angle = transform.rotation.eulerAngles.z;
+            Vector2 scaledPoint = Quaternion.AngleAxis(-angle, Vector3.forward)*rotatedScaledPoint;
+            Vector2 point = Vector2.Scale(scaledPoint, new Vector2(1/transform.lossyScale.x, 1/transform.lossyScale.y));
+            return point;
+        }
+
+        public static float GetAngle(Vector2 vector) {
+            return Mathf.Rad2Deg*Mathf.Atan2(vector.y, vector.x);
+        }
+
+        public static Quaternion Rotate2D(float angle) {
+            return Quaternion.AngleAxis(angle, Vector3.forward);
+        }
+
+        public static Vector3 Rotated2DVector(float angle) {
+            return Rotate2D(angle)*Vector3.right;
+        }
     }
 
     public class DisposableMaterialProperty : IDisposable {
