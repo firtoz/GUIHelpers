@@ -111,6 +111,7 @@ namespace toxicFork.GUIHelpers {
         }
 
         public class AngleSliderInfo {
+            public int button;
             public float dragAngle;
         }
 
@@ -135,8 +136,10 @@ namespace toxicFork.GUIHelpers {
                 switch (Event.current.type)
                 {
                     case EventType.mouseUp:
-                        Event.current.Use();
-                        GUIUtility.hotControl = 0;
+                        if(Event.current.button == info.button) {
+                            Event.current.Use();
+                            GUIUtility.hotControl = 0;
+                        }
                         break;
                     case EventType.mouseMove:
                         Event.current.Use();
@@ -156,6 +159,7 @@ namespace toxicFork.GUIHelpers {
                 switch (Event.current.type) {
                         case EventType.mouseDown:
                         if (distanceFromDrawer <= Mathf.Epsilon) {
+                            info.button = Event.current.button;
                             info.dragAngle = mouseAngle;
                             Event.current.Use();
                             GUIUtility.hotControl = controlID;
