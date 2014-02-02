@@ -6,8 +6,8 @@ using UnityEngine;
 using Object = UnityEngine.Object;
 
 namespace toxicFork.GUIHelpers {
-    public class EditorHelpers : Helpers{
-	    public static void RecordUndo(String action, params Object[] objects) {
+    public class EditorHelpers : Helpers {
+        public static void RecordUndo(String action, params Object[] objects) {
             Undo.RecordObjects(objects, action);
         }
 
@@ -35,8 +35,7 @@ namespace toxicFork.GUIHelpers {
             HandleUtility.AddControl(controlID, distance);
             switch (Event.current.type) {
                 case EventType.repaint:
-                    using (GUITextureDrawer drawer = new GUITextureDrawer(texture, hotTexture))
-                    {
+                    using (GUITextureDrawer drawer = new GUITextureDrawer(texture, hotTexture)) {
                         using (
                             new Disposable.MaterialProperty(drawer.Material, "_Hot",
                                 GUIUtility.hotControl == controlID && distance <= 0 ? 1f : 0f)
@@ -84,15 +83,12 @@ namespace toxicFork.GUIHelpers {
 
         public class AngleSliderInfo {
             public int button;
-            public float dragAngle;
+            public float mouseAngle;
+            public float angle;
         }
 
         public static float AngleSlider(int controlID, HandleDrawerBase drawer, Vector2 center, float angle,
-            float distanceFromCenter, float handleSize) {
-            Vector2 handlePosition = center + Rotated2DVector(angle)*distanceFromCenter;
-            float distanceFromDrawer = drawer.GetDistance(handlePosition, handleSize, angle);
-            HandleUtility.AddControl(controlID, distanceFromDrawer);
-
+            float distanceFromCenter, float handleSize, float snap = 0) {
             AngleSliderInfo info = StateObject.Get<AngleSliderInfo>(controlID);
 
             Vector2 mousePosition = Event.current.mousePosition;
@@ -100,15 +96,17 @@ namespace toxicFork.GUIHelpers {
 
             float mouseAngle = GetAngle(worldMousePosition - center);
 
-            if (Event.current.type == EventType.repaint) {
-                drawer.Draw(controlID, handlePosition, handleSize, angle);
-            }
-
             if (GUIUtility.hotControl == controlID) {
-                switch (Event.current.type)
-                {
+                angle = info.angle;
+            }
+            Vector2 handlePosition = center + Rotated2DVector(angle) * distanceFromCenter;
+
+            if (GUIUtility.hotControl == controlID)
+            {
+                HandleUtility.AddControl(controlID, 0);
+                switch (Event.current.type) {
                     case EventType.mouseUp:
-                        if(Event.current.button == info.button) {
+                        if (Event.current.button == info.button) {
                             Event.current.Use();
                             GUIUtility.hotControl = 0;
                         }
@@ -120,32 +118,46 @@ namespace toxicFork.GUIHelpers {
                     case EventType.mouseDrag:
                         Event.current.Use();
 
-                        angle += Mathf.DeltaAngle(info.dragAngle, mouseAngle);
-                        info.dragAngle = mouseAngle;
-                        
+                        info.angle += Mathf.DeltaAngle(info.mouseAngle, mouseAngle);
+                        info.mouseAngle = mouseAngle;
+
+                        angle = Handles.SnapValue(info.angle, snap);
+
                         GUI.changed = true;
                         break;
                 }
+
             }
-            else if(GUIUtility.hotControl == 0) {
-                switch (Event.current.type) {
+            else
+            {
+                float distanceFromDrawer = drawer.GetDistance(handlePosition, handleSize, angle);
+                HandleUtility.AddControl(controlID, distanceFromDrawer);
+
+                if (GUIUtility.hotControl == 0) {
+
+                    switch (Event.current.type) {
                         case EventType.mouseDown:
-                        if (distanceFromDrawer <= Mathf.Epsilon) {
-                            info.button = Event.current.button;
-                            info.dragAngle = mouseAngle;
-                            Event.current.Use();
-                            GUIUtility.hotControl = controlID;
-                        }
-                        break;
+                            if (distanceFromDrawer <= Mathf.Epsilon) {
+                                info.button = Event.current.button;
+                                info.mouseAngle = mouseAngle;
+                                info.angle = angle;
+                                Event.current.Use();
+                                GUIUtility.hotControl = controlID;
+                            }
+                            break;
+                    }
                 }
+            }
+
+            if (Event.current.type == EventType.repaint) {
+                drawer.Draw(controlID, handlePosition, handleSize, angle);
             }
 
             return angle;
         }
 
 
-        public static Vector3 HandlePointToWorld(Vector2 mousePosition)
-        {
+        public static Vector3 HandlePointToWorld(Vector2 mousePosition) {
             return HandleUtility.GUIPointToWorldRay(mousePosition).origin;
         }
     }
