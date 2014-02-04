@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using System;
 using toxicFork.GUIHelpers.DisposableGUI;
 using toxicFork.GUIHelpers.DisposableHandles;
@@ -169,3 +170,5 @@ namespace toxicFork.GUIHelpers {
 		}
 	}
 }
+
+#endif
