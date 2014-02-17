@@ -1,5 +1,4 @@
 #if UNITY_EDITOR
-using toxicFork.GUIHelpers.Disposable;
 using UnityEditor;
 using UnityEngine;
 
