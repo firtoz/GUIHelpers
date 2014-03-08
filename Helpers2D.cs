@@ -1,5 +1,7 @@
-﻿using UnityEditor;
-using UnityEngine;
+﻿using UnityEngine;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace toxicFork.GUIHelpers {
     public class Helpers2D : Helpers {
@@ -64,14 +66,16 @@ namespace toxicFork.GUIHelpers {
             return Vector3.Cross(ray.direction, point - ray.origin).magnitude;
         }
 
-        public static Vector2 Intersect2DPlane(Ray ray)
-        {
-            float d = Vector3.Dot(-ray.origin, Vector3.forward) / Vector3.Dot(ray.direction, Vector3.forward);
-            return ray.GetPoint(d);
-        }
-
-        public static Vector2 GUIPointTo2DPosition(Vector2 position) {
+	    public static Vector2 Intersect2DPlane(Ray ray)
+	    {
+		    float d = Vector3.Dot(-ray.origin, Vector3.forward) / Vector3.Dot(ray.direction, Vector3.forward);
+		    return ray.GetPoint(d);
+	    }
+		
+#if UNITY_EDITOR
+	    public static Vector2 GUIPointTo2DPosition(Vector2 position) {
             return Intersect2DPlane(HandleUtility.GUIPointToWorldRay(position));
         }
+#endif
     }
 }

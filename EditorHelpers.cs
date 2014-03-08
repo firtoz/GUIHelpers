@@ -1,5 +1,7 @@
-using toxicFork.GUIHelpers.DisposableGL;
 #if UNITY_EDITOR
+using toxicFork.GUIHelpers.Disposable;
+using toxicFork.GUIHelpers.DisposableGL;
+using MaterialProperty = toxicFork.GUIHelpers.Disposable.MaterialProperty;
 using System;
 using toxicFork.GUIHelpers.DisposableGUI;
 using toxicFork.GUIHelpers.DisposableHandles;
@@ -41,10 +43,10 @@ namespace toxicFork.GUIHelpers {
                 case EventType.repaint:
                     using (GUITextureDrawer drawer = new GUITextureDrawer(texture, hotTexture)) {
                         using (
-                            new Disposable.MaterialProperty(drawer.Material, "_Hot",
+                            new MaterialProperty(drawer.Material, "_Hot",
                                 GUIUtility.hotControl == controlID && distance <= 0 ? 1f : 0f)
                             ) {
-                            using (new Disposable.MaterialColor(drawer.Material, color)) {
+                            using (new MaterialColor(drawer.Material, color)) {
                                 drawer.DrawSquare(buttonPosition, Quaternion.identity, buttonSize);
                             }
                         }
@@ -209,7 +211,34 @@ namespace toxicFork.GUIHelpers {
                 GL.End();
             }
         }
+
+	    public static MouseCursor RotatedResizeCursor(Vector2 direction)
+	    {
+		    float angle = Helpers2D.GetAngle2D(direction);
+		    MouseCursor cursor;
+		    if (Mathf.Abs(Mathf.DeltaAngle(angle, 0)) <= 22.5f || Mathf.Abs(Mathf.DeltaAngle(angle, 180)) <= 22.5f)
+		    {
+			    cursor = MouseCursor.ResizeHorizontal;
+		    }
+		    else if (Mathf.Abs(Mathf.DeltaAngle(angle, 45)) <= 22.5f
+		             || Mathf.Abs(Mathf.DeltaAngle(angle, 225)) <= 22.5f)
+		    {
+			    cursor = MouseCursor.ResizeUpRight;
+		    }
+		    else if (Mathf.Abs(Mathf.DeltaAngle(angle, 135)) <= 22.5f
+		             || Mathf.Abs(Mathf.DeltaAngle(angle, 315)) <= 22.5f)
+		    {
+			    cursor = MouseCursor.ResizeUpLeft;
+		    }
+		    else
+		    {
+			    cursor = MouseCursor.ResizeVertical;
+		    }
+		    return cursor;
+	    }
     }
+
+
 }
 
 #endif
