@@ -39,6 +39,7 @@ namespace toxicFork.GUIHelpers {
             Vector3 right = rotation*Vector3.right;
             Vector3 bottomLeft = position - up*halfSize - right*halfSize;
             GL.Begin(GL.QUADS);
+            GL.Color(Color.white);
             GL.TexCoord2(0, 0);
             GL.Vertex(bottomLeft);
             GL.TexCoord2(0, 1);
