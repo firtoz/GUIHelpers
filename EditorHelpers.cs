@@ -103,7 +103,7 @@ namespace toxicFork.GUIHelpers {
             if (GUIUtility.hotControl == controlID) {
                 angle = info.angle;
             }
-            Vector2 handlePosition = center + Helpers2D.Rotated2DVector(angle)*distanceFromCenter;
+            Vector2 handlePosition = center + Helpers2D.GetDirection(angle)*distanceFromCenter;
 
             EventType typeForControl = current.GetTypeForControl(controlID);
 
@@ -128,7 +128,7 @@ namespace toxicFork.GUIHelpers {
                         info.mousePosition += new Vector2(current.delta.x, current.delta.y);
                         Vector2 worldMousePosition = HandlePointToWorld(info.mousePosition);
 
-                        float mouseAngle = Helpers2D.GetAngle2D(worldMousePosition - center);
+                        float mouseAngle = Helpers2D.GetAngle(worldMousePosition - center);
 
                         info.angle += Mathf.DeltaAngle(info.mouseAngle, mouseAngle);
                         info.mouseAngle = mouseAngle;
@@ -149,7 +149,7 @@ namespace toxicFork.GUIHelpers {
 
                                 Vector2 worldMousePosition = HandlePointToWorld(info.mousePosition);
 
-                                float mouseAngle = Helpers2D.GetAngle2D(worldMousePosition - center);
+                                float mouseAngle = Helpers2D.GetAngle(worldMousePosition - center);
                                 info.mouseAngle = mouseAngle;
                                 info.angle = angle;
                                 current.Use();
@@ -214,7 +214,7 @@ namespace toxicFork.GUIHelpers {
 
 	    public static MouseCursor RotatedResizeCursor(Vector2 direction)
 	    {
-		    float angle = Helpers2D.GetAngle2D(direction);
+		    float angle = Helpers2D.GetAngle(direction);
 		    MouseCursor cursor;
 		    if (Mathf.Abs(Mathf.DeltaAngle(angle, 0)) <= 22.5f || Mathf.Abs(Mathf.DeltaAngle(angle, 180)) <= 22.5f)
 		    {

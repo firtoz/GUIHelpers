@@ -1,9 +1,8 @@
-#if UNITY_EDITOR
+using toxicFork.GUIHelpers.DisposableEditorGUILayout;
 using toxicFork.GUIHelpers.DisposableGUI;
 using toxicFork.GUIHelpers.DisposableGUILayout;
 using toxicFork.GUIHelpers.DisposableHandles;
-using toxicFork.GUIHelpers.DisposableEditorGUILayout;
-
+#if UNITY_EDITOR
 using System;
 using UnityEditor;
 using UnityEngine;

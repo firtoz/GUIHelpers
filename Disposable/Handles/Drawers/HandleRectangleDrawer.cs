@@ -17,12 +17,12 @@ namespace toxicFork.GUIHelpers.Disposable {
 		protected override void DoDraw(int controlID, Vector2 position, float size, float rotation) {
 			Color color = GUIUtility.hotControl == controlID ? activeColor : baseColor;
 			using (new HandleColor(color)) {
-				Handles.RectangleCap(controlID, position, Helpers2D.Rotate2D(rotation), size);
+				Handles.RectangleCap(controlID, position, Helpers2D.Rotate(rotation), size);
 			}
 		}
 
 		public override float GetDistance(Vector2 position, float size, float rotation) {
-			return HandleUtility.DistanceToRectangle(position, Helpers2D.Rotate2D(rotation), size);
+			return HandleUtility.DistanceToRectangle(position, Helpers2D.Rotate(rotation), size);
 		}
 	}
 }
