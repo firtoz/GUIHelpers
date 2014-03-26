@@ -76,5 +76,24 @@ namespace toxicFork.GUIHelpers {
             return Intersect2DPlane(HandleUtility.GUIPointToWorldRay(position));
         }
 #endif
+
+        public static float DistanceAlongLine(Ray ray, Vector2 wantedPosition) {
+            Ray normalFromCenter = new Ray(ray.origin, new Vector2(-ray.direction.y, ray.direction.x));
+            float distance = DistanceToLine(normalFromCenter, wantedPosition);
+
+            Vector2 wantedDirection = (wantedPosition - (Vector2)ray.origin).normalized;
+
+            float dot = Vector2.Dot(wantedDirection, ray.direction);
+            if (dot < 0)
+            {
+                distance *= -1;
+            }
+
+            return distance;
+        }
+
+        public static Vector2 GetNormal(Vector2 direction) {
+            return new Vector2(-direction.y, direction.x);
+        }
     }
 }

@@ -52,6 +52,30 @@ namespace toxicFork.GUIHelpers {
         }
 
 
+        private static Material _guiMaterial;
+
+        public static Material GUIMaterial
+        {
+            get
+            {
+                return _guiMaterial ??
+                       (_guiMaterial =
+                           new Material(Shader.Find("GUI Helpers/GUI")) { hideFlags = HideFlags.HideAndDontSave });
+            }
+        }
+
+        private static Material _alwaysVisibleGUIMaterial;
+
+        public static Material AlwaysVisibleGUIMaterial
+        {
+            get
+            {
+                return _alwaysVisibleGUIMaterial ??
+                       (_alwaysVisibleGUIMaterial =
+                           new Material(Shader.Find("GUI Helpers/GUI (Always Visible)")) { hideFlags = HideFlags.HideAndDontSave });
+            }
+        }
+
 #if UNITY_EDITOR
         public static void SelectObject(Object target, bool add = false)
         {

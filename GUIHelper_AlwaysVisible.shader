@@ -1,4 +1,4 @@
-﻿Shader "GUI Helpers/GUI" {
+﻿Shader "GUI Helpers/GUI (Always Visible)" {
 Properties {
 	_MainTex ("Base (RGB) Trans (A)", 2D) = "white" {}
 	_HotTex ("Hot Texture (RGB) Trans (A)", 2D) = "white" {}
@@ -11,8 +11,8 @@ SubShader {
 	LOD 100
 	
 	Cull Off
-	//ZWrite Off
-	//ZTest Always
+	ZWrite Off
+	ZTest Always
 	Blend SrcAlpha OneMinusSrcAlpha 
 	
 	Pass {  
