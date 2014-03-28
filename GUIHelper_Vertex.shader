@@ -1,9 +1,6 @@
-﻿Shader "GUI Helpers/GUI (Always Visible)" {
+﻿Shader "GUI Helpers/GUI (Vertex)" {
 Properties {
-	_MainTex ("Base (RGB) Trans (A)", 2D) = "white" {}
-	_HotTex ("Hot Texture (RGB) Trans (A)", 2D) = "white" {}
-	_Color ("Tint (A = Opacity)", Color) = (1,1,1,1) 
-	_Hot ("Hot", Float) = 0 
+	_Color ("Tint (A = Opacity)", Color) = (1,1,1,1)
 }
 
 SubShader {
@@ -24,28 +21,20 @@ SubShader {
 
 			struct appdata_t {
 				float4 vertex : POSITION;
-				float2 texcoord : TEXCOORD0;
                 float4 color : COLOR;
 			};
 
 			struct v2f {
 				float4 vertex : SV_POSITION;
-				half2 texcoord : TEXCOORD0;
 				float4 color : COLOR;
 			};
 
-			sampler2D _MainTex;
-			sampler2D _HotTex;
-			float4 _MainTex_ST;
-			float4 _HotTex_ST;
 			float4 _Color;
-			float _Hot;
 			
 			v2f vert (appdata_t v)
 			{
 				v2f o;
 				o.vertex = mul(UNITY_MATRIX_MVP, v.vertex);
-				o.texcoord = TRANSFORM_TEX(v.texcoord, _MainTex);
                 o.color = v.color;
 				return o;
 			}
@@ -53,8 +42,7 @@ SubShader {
 			fixed4 frag (v2f i) : COLOR
 			{
 				fixed4 col;
-				col =  tex2D(_MainTex, i.texcoord) * (1.0f-_Hot) + tex2D(_HotTex, i.texcoord) * _Hot;
-				return col * _Color * i.color;
+				return _Color * i.color;
 			}
 		ENDCG
 	}

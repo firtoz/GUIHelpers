@@ -53,12 +53,7 @@ SubShader {
 			fixed4 frag (v2f i) : COLOR
 			{
 				fixed4 col;
-				if(_Hot < 0.5f) {
-					col =  tex2D(_MainTex, i.texcoord);
-				}
-				else {
-					col =  tex2D(_HotTex, i.texcoord);
-				}
+				col =  tex2D(_MainTex, i.texcoord) * (1.0f-_Hot) + tex2D(_HotTex, i.texcoord) * _Hot;
 				return col * _Color * i.color;
 			}
 		ENDCG

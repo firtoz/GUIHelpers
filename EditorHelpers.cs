@@ -173,13 +173,17 @@ namespace toxicFork.GUIHelpers {
             return HandleUtility.GUIPointToWorldRay(mousePosition).origin;
         }
 
-        public static void DrawThickLine(Vector3 p1, Vector3 p2, float thickness) {
+        public static void DrawThickLine(Vector3 p1, Vector3 p2, float thickness, bool alwaysVisible = false) {
             Camera current = Camera.current;
             if (!current || Event.current.type != EventType.Repaint) {
                 return;
             }
             Color c = Handles.color*new Color(1f, 1f, 1f, 0.75f);
-            GUIMaterial.SetPass(0);
+            if (alwaysVisible) {
+                AlwaysVisibleVertexGUIMaterial.SetPass(0);
+            } else {
+                VertexGUIMaterial.SetPass(0);
+            }
 
             using (new GLMatrix()) {
                 GL.MultMatrix(Handles.matrix);
@@ -201,12 +205,12 @@ namespace toxicFork.GUIHelpers {
             }
         }
 
-        public static void DrawThickLineWithOutline(Vector3 a, Vector3 b, float mainThickness, float outlineThickness)
-        {
+        public static void DrawThickLineWithOutline(Vector3 a, Vector3 b, float mainThickness, float outlineThickness,
+            bool alwaysVisible = false) {
             Color bg = Color.black;
             bg.a = Handles.color.a;
             using (new HandleColor(bg)) {
-                DrawThickLine(a, b, mainThickness + outlineThickness);
+                DrawThickLine(a, b, mainThickness + outlineThickness, alwaysVisible);
             }
 
             Vector3 cameraVectorA = HandleToCameraPoint(a);
@@ -218,7 +222,7 @@ namespace toxicFork.GUIHelpers {
             a = CameraToHandlePoint(cameraVectorA);
             b = CameraToHandlePoint(cameraVectorB);
 
-            DrawThickLine(a, b, mainThickness);
+            DrawThickLine(a, b, mainThickness, alwaysVisible);
         }
 
         public static Vector3 CameraToHandlePoint(Vector3 cameraVectorA) {
@@ -229,7 +233,8 @@ namespace toxicFork.GUIHelpers {
             return Camera.current.WorldToScreenPoint(Handles.matrix.MultiplyPoint(a));
         }
 
-        public static float LineSlider(int controlID, Vector2 center, float distance, float angle, float handleScale = 1f) {
+        public static float LineSlider(int controlID, Vector2 center, float distance, float angle,
+            float handleScale = 1f, bool alwaysVisible = false) {
             HoverState state = StateObject.Get<HoverState>(controlID);
             Vector2 direction = Helpers2D.GetDirection(angle);
             Vector2 wantedPosition = center + direction*distance;
@@ -265,7 +270,7 @@ namespace toxicFork.GUIHelpers {
                     break;
                 case EventType.repaint:
                     Color color = Handles.color;
-                    
+
                     if (GUIUtility.hotControl == controlID || state.hovering) {
                         color = GUIUtility.hotControl == controlID ? Color.red : Color.yellow;
 
@@ -273,7 +278,8 @@ namespace toxicFork.GUIHelpers {
 
                         SetEditorCursor(cursor, controlID);
                         drawScale = 2;
-                    } else if (GUIUtility.hotControl != 0) {
+                    }
+                    else if (GUIUtility.hotControl != 0) {
                         color.a = 0.5f;
                     }
 
@@ -281,8 +287,7 @@ namespace toxicFork.GUIHelpers {
                     using (new HandleColor(color)) {
                         Vector3 a = wantedPosition - drawNormal;
                         Vector3 b = wantedPosition + drawNormal;
-                        if (GUIUtility.hotControl == controlID)
-                        {
+                        if (GUIUtility.hotControl == controlID) {
                             Vector3 cameraVectorA = Camera.current.WorldToScreenPoint(Handles.matrix.MultiplyPoint(a));
                             Vector3 cameraVectorB = Camera.current.WorldToScreenPoint(Handles.matrix.MultiplyPoint(b));
 
@@ -292,7 +297,7 @@ namespace toxicFork.GUIHelpers {
                             a = Handles.inverseMatrix.MultiplyPoint(Camera.current.ScreenToWorldPoint(cameraVectorA));
                             b = Handles.inverseMatrix.MultiplyPoint(Camera.current.ScreenToWorldPoint(cameraVectorB));
                         }
-                        DrawThickLineWithOutline(a, b, 2, 2);
+                        DrawThickLineWithOutline(a, b, 2, 2, alwaysVisible);
                     }
                     break;
             }

@@ -63,6 +63,28 @@ namespace toxicFork.GUIHelpers {
                            new Material(Shader.Find("GUI Helpers/GUI")) { hideFlags = HideFlags.HideAndDontSave });
             }
         }
+        private static Material _vertexGUIMaterial;
+
+        public static Material VertexGUIMaterial
+        {
+            get
+            {
+                return _vertexGUIMaterial ??
+                       (_vertexGUIMaterial =
+                           new Material(Shader.Find("GUI Helpers/GUI (Vertex)")) { hideFlags = HideFlags.HideAndDontSave });
+            }
+        }
+        private static Material _alwaysVisiblevertexGUIMaterial;
+
+        public static Material AlwaysVisibleVertexGUIMaterial
+        {
+            get
+            {
+                return _alwaysVisiblevertexGUIMaterial ??
+                       (_alwaysVisiblevertexGUIMaterial =
+                           new Material(Shader.Find("GUI Helpers/GUI (Vertex, Always Visible)")) { hideFlags = HideFlags.HideAndDontSave });
+            }
+        }
 
         private static Material _alwaysVisibleGUIMaterial;
 
