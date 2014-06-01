@@ -59,7 +59,7 @@ namespace toxicFork.GUIHelpers {
             return Vector3.Cross(ray.direction, point - ray.origin).magnitude;
         }
 
-        public static Vector2 ClosestPointToLine(Ray ray, Vector2 point) {
+        public static Vector2 ClosestPointToRay(Ray ray, Vector2 point) {
             //http://pastie.org/1066490
             float t = Vector2.Dot(point - (Vector2) ray.origin, ray.direction);
 
