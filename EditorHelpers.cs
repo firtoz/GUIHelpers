@@ -333,6 +333,70 @@ namespace toxicFork.GUIHelpers {
                 : worldDirection;
             return cameraDirection;
         }
+
+        public static void SelectObject(Object target, bool add = false)
+        {
+            if (add)
+            {
+                Object[] objects = Selection.objects;
+                if (!ArrayUtility.Contains(objects, target))
+                {
+                    ArrayUtility.Add(ref objects, target);
+                    Selection.objects = objects;
+                }
+            }
+            else
+            {
+                Selection.activeObject = target;
+            }
+        }
+
+        private static int _contextClickID;
+
+        public static void ContextClick(int controlID, Action action)
+        {
+            Event current = Event.current;
+            switch (current.GetTypeForControl(controlID))
+            {
+                case EventType.ContextClick:
+                    if (HandleUtility.nearestControl == controlID && _contextClickID == controlID)
+                    {
+                        _contextClickID = 0;
+                        action();
+                        GUIUtility.hotControl = 0;
+                        GUIUtility.keyboardControl = 0;
+                        current.Use();
+                    }
+                    break;
+                case EventType.mouseDown:
+                    if (HandleUtility.nearestControl == controlID)
+                    {
+                        if (current.button == 1)
+                        {
+                            _contextClickID = controlID;
+                            GUIUtility.hotControl = 0;
+                            GUIUtility.keyboardControl = 0;
+                            Event.current.Use();
+                        }
+                    }
+                    break;
+            }
+        }
+
+        public static void ShowDropDown(Rect windowRect, Action<Action> onGUI) {
+            EditorApplication.delayCall += () => {
+                HelperPopupWindow helperPopupWindow = ScriptableObject.CreateInstance<HelperPopupWindow>();
+                helperPopupWindow.ShowAsDropDown(onGUI, windowRect);
+            };
+        }
+
+        public static void ShowDropDown(Rect windowRect, Action<Action, bool> onGUIFocus)
+        {
+            EditorApplication.delayCall += () => {
+                HelperPopupWindow helperPopupWindow = ScriptableObject.CreateInstance<HelperPopupWindow>();
+                helperPopupWindow.ShowAsDropDown(onGUIFocus, windowRect);
+            };
+        }
     }
 }
 

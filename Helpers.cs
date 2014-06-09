@@ -2,10 +2,6 @@
 using System.Collections;
 using toxicFork.GUIHelpers.DisposableGL;
 using UnityEngine;
-using Object = UnityEngine.Object;
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
 
 namespace toxicFork.GUIHelpers {
     public class Helpers {
@@ -97,24 +93,5 @@ namespace toxicFork.GUIHelpers {
                            new Material(Shader.Find("GUI Helpers/GUI (Always Visible)")) { hideFlags = HideFlags.HideAndDontSave });
             }
         }
-
-#if UNITY_EDITOR
-        public static void SelectObject(Object target, bool add = false)
-        {
-            if (add)
-            {
-                Object[] objects = Selection.objects;
-                if (!ArrayUtility.Contains(objects, target))
-                {
-                    ArrayUtility.Add(ref objects, target);
-                    Selection.objects = objects;
-                }
-            }
-            else
-            {
-                Selection.activeObject = target;
-            }
-        }
-#endif
     }
 }
