@@ -11,6 +11,17 @@ using Object = UnityEngine.Object;
 
 namespace toxicFork.GUIHelpers {
     public class EditorHelpers : Helpers {
+        private static GUIStyle _fontWithBackgroundStyle;
+
+        public static GUIStyle FontWithBackgroundStyle {
+            get {
+                return _fontWithBackgroundStyle ?? (_fontWithBackgroundStyle = new GUIStyle(GUI.skin.box) {
+                    alignment = TextAnchor.MiddleCenter,
+                    padding = new RectOffset(0, 0, 0, 0)
+                });
+            }
+        }
+
         public static void RecordUndo(String action, params Object[] objects) {
             Undo.RecordObjects(objects, action);
         }
@@ -93,6 +104,7 @@ namespace toxicFork.GUIHelpers {
             public float mouseAngle;
             public Vector2 mousePosition;
             public float angle;
+            public bool hovering;
         }
 
         public static float AngleSlider(int controlID, HandleDrawerBase drawer, Vector2 center, float angle,
@@ -106,16 +118,26 @@ namespace toxicFork.GUIHelpers {
             }
             Vector2 handlePosition = center + Helpers2D.GetDirection(angle)*distanceFromCenter;
 
+            if (Event.current.type == EventType.layout) {
+                float distanceFromDrawer = drawer.GetDistance(handlePosition, handleSize, angle);
+                HandleUtility.AddControl(controlID, distanceFromDrawer);
+            }
+
             EventType typeForControl = current.GetTypeForControl(controlID);
 
             switch (typeForControl) {
-                case EventType.layout:
-                    float distanceFromDrawer = drawer.GetDistance(handlePosition, handleSize, angle);
-                    HandleUtility.AddControl(controlID, distanceFromDrawer);
+                case EventType.mouseMove:
+                    bool hovering = HandleUtility.nearestControl == controlID &&
+                                    (GUIUtility.hotControl == 0 || GUIUtility.hotControl == controlID);
+                    if (info.hovering != hovering) {
+                        current.Use();
+                        info.hovering = hovering;
+                    }
                     break;
             }
 
             if (GUIUtility.hotControl == controlID) {
+                //active!
                 switch (typeForControl) {
                     case EventType.mouseUp:
                         if (current.button == info.button) {
@@ -144,7 +166,7 @@ namespace toxicFork.GUIHelpers {
                 if (GUIUtility.hotControl == 0) {
                     switch (typeForControl) {
                         case EventType.mouseDown:
-                            if (HandleUtility.nearestControl == controlID) {
+                            if (HandleUtility.nearestControl == controlID && current.button == 0) {
                                 info.button = current.button;
                                 info.mousePosition = current.mousePosition;
 
@@ -162,7 +184,11 @@ namespace toxicFork.GUIHelpers {
             }
 
             if (typeForControl == EventType.repaint) {
-                drawer.Draw(controlID, handlePosition, handleSize, angle);
+                if (GUIUtility.hotControl == controlID || (GUIUtility.hotControl == 0 && info.hovering)) {
+                    SetEditorCursor(MouseCursor.RotateArrow, controlID);
+                }
+
+                drawer.Draw(controlID, handlePosition, handleSize, angle, info.hovering);
             }
 
             return angle;
@@ -178,10 +204,11 @@ namespace toxicFork.GUIHelpers {
             if (!current || Event.current.type != EventType.Repaint) {
                 return;
             }
-            Color c = Handles.color*new Color(1f, 1f, 1f, 0.75f);
+            Color c = Handles.color;
             if (alwaysVisible) {
                 AlwaysVisibleVertexGUIMaterial.SetPass(0);
-            } else {
+            }
+            else {
                 VertexGUIMaterial.SetPass(0);
             }
 
@@ -192,8 +219,28 @@ namespace toxicFork.GUIHelpers {
                 Vector3 screenPoint2 = current.WorldToScreenPoint(p2);
 
                 Vector3 dir = (screenPoint2 - screenPoint1).normalized;
-                Vector3 perpendicular = new Vector2(-dir.y, dir.x).normalized*thickness*0.5f;
+                Vector3 perpendicular = Helpers2D.GetPerpendicularVector(dir).normalized*thickness*0.5f;
                 dir *= (thickness*0.5f);
+
+                GL.Begin(GL.QUADS);
+                GL.Color(new Color(c.r, c.g, c.b, c.a*0.5f));
+                Vector3 extendedPerpendicular = (perpendicular + perpendicular.normalized*1f);
+                Vector3 extendedDir = (dir + dir.normalized*1f);
+                GL.Vertex(current.ScreenToWorldPoint(screenPoint1 - extendedDir - extendedPerpendicular));
+                GL.Vertex(current.ScreenToWorldPoint(screenPoint1 - extendedDir + extendedPerpendicular));
+                GL.Vertex(current.ScreenToWorldPoint(screenPoint2 + extendedDir + extendedPerpendicular));
+                GL.Vertex(current.ScreenToWorldPoint(screenPoint2 + extendedDir - extendedPerpendicular));
+                GL.End();
+
+                GL.Begin(GL.QUADS);
+                GL.Color(new Color(c.r, c.g, c.b, c.a*0.5f));
+                extendedPerpendicular = (perpendicular + perpendicular.normalized*.5f);
+                extendedDir = (dir + dir.normalized*.5f);
+                GL.Vertex(current.ScreenToWorldPoint(screenPoint1 - extendedDir - extendedPerpendicular));
+                GL.Vertex(current.ScreenToWorldPoint(screenPoint1 - extendedDir + extendedPerpendicular));
+                GL.Vertex(current.ScreenToWorldPoint(screenPoint2 + extendedDir + extendedPerpendicular));
+                GL.Vertex(current.ScreenToWorldPoint(screenPoint2 + extendedDir - extendedPerpendicular));
+                GL.End();
 
                 GL.Begin(GL.QUADS);
                 GL.Color(c);
@@ -205,42 +252,37 @@ namespace toxicFork.GUIHelpers {
             }
         }
 
+
         public static void DrawThickLineWithOutline(Vector3 a, Vector3 b, float mainThickness, float outlineThickness,
             bool alwaysVisible = false) {
-            Color bg = Color.black;
+            Color bg = YIQ(Handles.color);
             bg.a = Handles.color.a;
             using (new HandleColor(bg)) {
                 DrawThickLine(a, b, mainThickness + outlineThickness, alwaysVisible);
             }
 
-            Vector3 cameraVectorA = HandleToCameraPoint(a);
-            Vector3 cameraVectorB = HandleToCameraPoint(b);
+            Vector3 cameraVectorA = HandleToScreenPoint(a);
+            Vector3 cameraVectorB = HandleToScreenPoint(b);
 
             cameraVectorA.z -= 0.01f;
             cameraVectorB.z -= 0.01f;
 
-            a = CameraToHandlePoint(cameraVectorA);
-            b = CameraToHandlePoint(cameraVectorB);
+            a = ScreenToHandlePoint(cameraVectorA);
+            b = ScreenToHandlePoint(cameraVectorB);
 
             DrawThickLine(a, b, mainThickness, alwaysVisible);
         }
 
-        public static Vector3 CameraToHandlePoint(Vector3 cameraVectorA) {
-            return Handles.inverseMatrix.MultiplyPoint(Camera.current.ScreenToWorldPoint(cameraVectorA));
-        }
-
-        public static Vector3 HandleToCameraPoint(Vector3 a) {
-            return Camera.current.WorldToScreenPoint(Handles.matrix.MultiplyPoint(a));
-        }
-
         public static float LineSlider(int controlID, Vector2 center, float distance, float angle,
-            float handleScale = 1f, bool alwaysVisible = false) {
-            HoverState state = StateObject.Get<HoverState>(controlID);
+            float handleScale = 1f, bool alwaysVisible = false, bool arrow = false) {
+            HoverState hoverState = StateObject.Get<HoverState>(controlID);
             Vector2 direction = Helpers2D.GetDirection(angle);
             Vector2 wantedPosition = center + direction*distance;
 
-            Vector2 normal = new Vector2(-direction.y, direction.x)*
-                             HandleUtility.GetHandleSize(wantedPosition)*handleScale;
+            float handleSize = HandleUtility.GetHandleSize(wantedPosition)*handleScale;
+
+            Vector2 normal = Helpers2D.GetPerpendicularVector(direction)*
+                             handleSize;
 
             EditorGUI.BeginChangeCheck();
 
@@ -263,15 +305,15 @@ namespace toxicFork.GUIHelpers {
             switch (current.GetTypeForControl(controlID)) {
                 case EventType.mouseMove:
                     bool hovering = HandleUtility.nearestControl == controlID;
-                    if (state.hovering != hovering) {
+                    if (hoverState.hovering != hovering) {
                         current.Use();
-                        state.hovering = hovering;
+                        hoverState.hovering = hovering;
                     }
                     break;
                 case EventType.repaint:
                     Color color = Handles.color;
 
-                    if (GUIUtility.hotControl == controlID || state.hovering) {
+                    if (GUIUtility.hotControl == controlID || hoverState.hovering) {
                         color = GUIUtility.hotControl == controlID ? Color.red : Color.yellow;
 
                         MouseCursor cursor = RotatedResizeCursor(direction);
@@ -288,20 +330,41 @@ namespace toxicFork.GUIHelpers {
                         Vector3 a = wantedPosition - drawNormal;
                         Vector3 b = wantedPosition + drawNormal;
                         if (GUIUtility.hotControl == controlID) {
-                            Vector3 cameraVectorA = Camera.current.WorldToScreenPoint(Handles.matrix.MultiplyPoint(a));
-                            Vector3 cameraVectorB = Camera.current.WorldToScreenPoint(Handles.matrix.MultiplyPoint(b));
+                            Vector3 cameraVectorA = HandleToScreenPoint(a);
+                            Vector3 cameraVectorB = HandleToScreenPoint(b);
 
                             cameraVectorA.z -= 0.01f;
                             cameraVectorB.z -= 0.01f;
 
-                            a = Handles.inverseMatrix.MultiplyPoint(Camera.current.ScreenToWorldPoint(cameraVectorA));
-                            b = Handles.inverseMatrix.MultiplyPoint(Camera.current.ScreenToWorldPoint(cameraVectorB));
+                            a = ScreenToHandlePoint(cameraVectorA);
+                            b = ScreenToHandlePoint(cameraVectorB);
                         }
-                        DrawThickLineWithOutline(a, b, 2, 2, alwaysVisible);
+
+                        if (arrow) {
+                            Vector3 directionOffset = direction*handleSize*drawScale;
+
+                            using (new HandleColor(YIQ(Handles.color))) {
+                                DrawThickLine(a - directionOffset, wantedPosition, 4, alwaysVisible);
+                                DrawThickLine(b - directionOffset, wantedPosition, 4, alwaysVisible);
+                            }
+                            DrawThickLine(a - directionOffset, wantedPosition, 2, alwaysVisible);
+                            DrawThickLine(b - directionOffset, wantedPosition, 2, alwaysVisible);
+                        }
+                        else {
+                            DrawThickLineWithOutline(a, b, 2, 2, alwaysVisible);
+                        }
                     }
                     break;
             }
             return distance;
+        }
+
+        public static Vector3 ScreenToHandlePoint(Vector3 source) {
+            return Handles.inverseMatrix.MultiplyPoint(Camera.current.ScreenToWorldPoint(source));
+        }
+
+        public static Vector3 HandleToScreenPoint(Vector3 source) {
+            return Camera.current.WorldToScreenPoint(Handles.matrix.MultiplyPoint(source));
         }
 
         public static MouseCursor RotatedResizeCursor(Vector2 direction) {
@@ -334,33 +397,26 @@ namespace toxicFork.GUIHelpers {
             return cameraDirection;
         }
 
-        public static void SelectObject(Object target, bool add = false)
-        {
-            if (add)
-            {
+        public static void SelectObject(Object target, bool add = false) {
+            if (add) {
                 Object[] objects = Selection.objects;
-                if (!ArrayUtility.Contains(objects, target))
-                {
+                if (!ArrayUtility.Contains(objects, target)) {
                     ArrayUtility.Add(ref objects, target);
                     Selection.objects = objects;
                 }
             }
-            else
-            {
+            else {
                 Selection.activeObject = target;
             }
         }
 
         private static int _contextClickID;
 
-        public static void ContextClick(int controlID, Action action)
-        {
+        public static void ContextClick(int controlID, Action action) {
             Event current = Event.current;
-            switch (current.GetTypeForControl(controlID))
-            {
+            switch (current.GetTypeForControl(controlID)) {
                 case EventType.ContextClick:
-                    if (HandleUtility.nearestControl == controlID && _contextClickID == controlID)
-                    {
+                    if (HandleUtility.nearestControl == controlID && _contextClickID == controlID) {
                         _contextClickID = 0;
                         action();
                         GUIUtility.hotControl = 0;
@@ -369,10 +425,8 @@ namespace toxicFork.GUIHelpers {
                     }
                     break;
                 case EventType.mouseDown:
-                    if (HandleUtility.nearestControl == controlID)
-                    {
-                        if (current.button == 1)
-                        {
+                    if (HandleUtility.nearestControl == controlID) {
+                        if (current.button == 1) {
                             _contextClickID = controlID;
                             GUIUtility.hotControl = 0;
                             GUIUtility.keyboardControl = 0;
@@ -390,8 +444,7 @@ namespace toxicFork.GUIHelpers {
             };
         }
 
-        public static void ShowDropDown(Rect windowRect, Action<Action, bool> onGUIFocus)
-        {
+        public static void ShowDropDown(Rect windowRect, Action<Action, bool> onGUIFocus) {
             EditorApplication.delayCall += () => {
                 HelperPopupWindow helperPopupWindow = ScriptableObject.CreateInstance<HelperPopupWindow>();
                 helperPopupWindow.ShowAsDropDown(onGUIFocus, windowRect);

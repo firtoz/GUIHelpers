@@ -18,6 +18,12 @@ namespace toxicFork.GUIHelpers {
             return translatedRotatedScaledPoint;
         }
 
+
+        public static Vector2 GetPerpendicularVector(Vector3 dir)
+        {
+            return new Vector2(-dir.y, dir.x);
+        }
+
         /// <summary>
         /// Transforms a 2D vector into the transform's local space.
         /// </summary>

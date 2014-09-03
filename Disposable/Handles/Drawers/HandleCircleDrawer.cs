@@ -20,6 +20,24 @@ namespace toxicFork.GUIHelpers.DisposableHandles {
 			}
 		}
 
+		protected override void DoDraw(int controlID, Vector2 position, float size, float rotation, bool hovering) {
+            Color color;
+		    if (GUIUtility.hotControl == controlID) {
+		        color = activeColor;
+		    }
+		    else {
+		        if (hovering) {
+		            color = hoverColor;
+		        }
+		        else {
+		            color = baseColor;
+		        }
+		    }
+		    using (new HandleColor(color)) {
+				Handles.CircleCap(controlID, position, Quaternion.identity, size);
+			}
+		}
+
 		public override float GetDistance(Vector2 position, float size, float rotation) {
 			return HandleUtility.DistanceToCircle(position, size);
 		}

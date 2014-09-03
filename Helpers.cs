@@ -23,6 +23,15 @@ namespace toxicFork.GUIHelpers {
             }
         }
 
+        //https://harthur.github.io/brain/
+        public static Color YIQ(Color color) {
+            float r = color.r *255;
+            float g = color.g*255;
+            float b = color.b*255;
+            float yiq = (r*299 + g*587 + b*114) / 1000f;
+            return (yiq >= 128) ? Color.black : Color.white;
+        }
+
         /// <summary>
         /// Draws a square on the screen that is centered around the position.
         /// </summary>
