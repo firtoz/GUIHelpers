@@ -450,6 +450,44 @@ namespace toxicFork.GUIHelpers {
                 helperPopupWindow.ShowAsDropDown(onGUIFocus, windowRect);
             };
         }
+
+        public static void ShowUtility(String title, Rect windowRect, Action<Action, bool> onGUIFocus) {
+            EditorApplication.delayCall += () => {
+                HelperPopupWindow helperPopupWindow = ScriptableObject.CreateInstance<HelperPopupWindow>();
+                helperPopupWindow.position = windowRect;
+                helperPopupWindow.ShowUtility(title, onGUIFocus);
+                helperPopupWindow.Focus();
+            };
+        }
+
+        public static void ShowUtility(String title, Rect windowRect, Action<Action> onGUI) {
+            EditorApplication.delayCall += () => {
+                HelperPopupWindow helperPopupWindow = ScriptableObject.CreateInstance<HelperPopupWindow>();
+                helperPopupWindow.position = windowRect;
+                helperPopupWindow.ShowUtility(title, onGUI);
+            };
+        }
+        
+        public static void ShowUtility(String title, Rect windowRect, Action<Action> onGUI, Action onShow) {
+            EditorApplication.delayCall += () =>
+            {
+                HelperPopupWindow helperPopupWindow = ScriptableObject.CreateInstance<HelperPopupWindow>();
+                helperPopupWindow.position = windowRect;
+                helperPopupWindow.ShowUtility(title, onGUI);
+                onShow();
+            };
+        }
+
+        public static void ShowUtility(String title, Rect windowRect, Action<Action, bool> onGUIFocus, Action onShow)
+        {
+            EditorApplication.delayCall += () =>
+            {
+                HelperPopupWindow helperPopupWindow = ScriptableObject.CreateInstance<HelperPopupWindow>();
+                helperPopupWindow.position = windowRect;
+                helperPopupWindow.ShowUtility(title, onGUIFocus);
+                onShow();
+            };
+        }
     }
 }
 
