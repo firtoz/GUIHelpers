@@ -14,16 +14,14 @@ namespace toxicFork.GUIHelpers.Disposable {
 		public HandleRectangleDrawer(Color baseColor, Color activeColor, Color hoverColor)
 			: base(baseColor, activeColor, hoverColor) {}
 
-		protected override void DoDraw(int controlID, Vector2 position, float size, float rotation) {
-			Color color = GUIUtility.hotControl == controlID ? activeColor : baseColor;
-			using (new HandleColor(color)) {
-				Handles.RectangleCap(controlID, position, Helpers2D.Rotate(rotation), size);
-			}
-		}
 
 		public override float GetDistance(Vector2 position, float size, float rotation) {
 			return HandleUtility.DistanceToRectangle(position, Helpers2D.Rotate(rotation), size);
 		}
+
+	    protected override void DrawShape(int controlID, Vector2 position, float size, float rotation) {
+            Handles.RectangleCap(controlID, position, Helpers2D.Rotate(rotation), size);
+	    }
 	}
 }
 #endif

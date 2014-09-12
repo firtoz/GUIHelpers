@@ -2,7 +2,6 @@ using System;
 using UnityEngine;
 
 namespace toxicFork.GUIHelpers.DisposableHandles {
-
     public abstract class HandleDrawerStateObjectBase {
         public int controlID;
         public bool hovering;
@@ -11,16 +10,11 @@ namespace toxicFork.GUIHelpers.DisposableHandles {
         public float rotation;
     }
 
-    public abstract class HandleDrawerBase : IHandleDrawer, IDisposable
-    {
-        protected abstract void DoDraw(int controlID, Vector2 position, float size, float rotation);
-
-        protected virtual void DoDraw(int controlID, Vector2 position, float size, float rotation, bool hovering) {
-            DoDraw(controlID, position, size, rotation);
-        }
+    public abstract class HandleDrawerBase : IHandleDrawer, IDisposable {
+        protected abstract void DoDraw(int controlID, Vector2 position, float size, float rotation, bool hovering);
 
         protected virtual void DoDraw(HandleDrawerStateObjectBase stateObject) {
-            DoDraw(stateObject.controlID, stateObject.position, stateObject.size, stateObject.rotation);
+            DoDraw(stateObject.controlID, stateObject.position, stateObject.size, stateObject.rotation, stateObject.hovering);
         }
 
 		public void Draw(int controlID, Vector2 position, float size, float rotation) {

@@ -29,5 +29,31 @@ namespace toxicFork.GUIHelpers.DisposableHandles {
 			this.activeColor = activeColor;
 			this.hoverColor = hoverColor;
 		}
+
+	    protected abstract void DrawShape(int controlID, Vector2 position, float size, float rotation);
+
+	    protected override void DoDraw(int controlID, Vector2 position, float size, float rotation, bool hovering)
+        {
+            Color color;
+            if (GUIUtility.hotControl == controlID)
+            {
+                color = activeColor;
+            }
+            else
+            {
+                if (hovering)
+                {
+                    color = hoverColor;
+                }
+                else
+                {
+                    color = baseColor;
+                }
+            }
+            using (new HandleColor(color))
+            {
+                DrawShape(controlID, position, size, rotation);
+            }
+        }
 	}
 }
