@@ -22,6 +22,8 @@ namespace toxicFork.GUIHelpers {
             }
         }
 
+        public static readonly float HandleSizeToPixels = (1.0f/64);
+
         public static void RecordUndo(String action, params Object[] objects) {
             Undo.RecordObjects(objects, action);
         }
