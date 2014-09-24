@@ -490,6 +490,10 @@ namespace toxicFork.GUIHelpers {
                 onShow();
             };
         }
+
+        public static bool IsWarm(int controlID) {
+            return GUIUtility.hotControl == controlID || (GUIUtility.hotControl == 0 && HandleUtility.nearestControl == controlID);
+        }
     }
 }
 
