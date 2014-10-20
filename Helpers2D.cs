@@ -73,7 +73,7 @@ namespace toxicFork.GUIHelpers {
         }
 
         public static Vector2 Intersect2DPlane(Ray ray) {
-            float d = Vector3.Dot(-ray.origin, Vector3.forward)/Vector3.Dot(ray.direction, Vector3.forward);
+            float d = -(Vector3.Dot(ray.origin, Vector3.back)+0)/Vector3.Dot(ray.direction, Vector3.back);
             return ray.GetPoint(d);
         }
         

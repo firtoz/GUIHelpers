@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace toxicFork.GUIHelpers.DisposableGL
 {
-	class GLMatrix : IDisposable
+	public class GLMatrix : IDisposable
 	{
         public GLMatrix()
         {
