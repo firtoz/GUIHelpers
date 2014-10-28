@@ -343,14 +343,17 @@ namespace toxicFork.GUIHelpers {
                         }
 
                         if (arrow) {
-                            Vector3 directionOffset = direction*handleSize*drawScale;
-
+                            Vector3 directionOffset = direction*handleSize*drawScale*0.5f;
+//
                             using (new HandleColor(YIQ(Handles.color))) {
-                                DrawThickLine(a - directionOffset, wantedPosition, 4, alwaysVisible);
-                                DrawThickLine(b - directionOffset, wantedPosition, 4, alwaysVisible);
+                                DrawThickLine(a, b, 4, alwaysVisible);
+                                DrawThickLine(a - directionOffset, a, 4, alwaysVisible);
+                                DrawThickLine(b - directionOffset, b, 4, alwaysVisible);
                             }
-                            DrawThickLine(a - directionOffset, wantedPosition, 2, alwaysVisible);
-                            DrawThickLine(b - directionOffset, wantedPosition, 2, alwaysVisible);
+
+                            DrawThickLine(a, b, 2, alwaysVisible);
+                            DrawThickLine(a - directionOffset, a, 2, alwaysVisible);
+                            DrawThickLine(b - directionOffset, b, 2, alwaysVisible);
                         }
                         else {
                             DrawThickLineWithOutline(a, b, 2, 2, alwaysVisible);
