@@ -8,21 +8,23 @@ namespace toxicFork.GUIHelpers.DisposableGUI {
 		private readonly Texture2D hotTexture;
 		private readonly Quaternion rotation;
 		private readonly float scale;
+		private readonly float alpha;
 
 	    public bool alwaysVisible = false;
 
-		public GUITextureDrawer(Texture2D texture, Quaternion rotation = default(Quaternion), float scale = 1f) {
+		public GUITextureDrawer(Texture2D texture, Quaternion rotation = default(Quaternion), float scale = 1f, float alpha = 1f) {
 			this.rotation = rotation;
 			this.texture = texture;
 			this.scale = scale;
+            this.alpha = alpha;
 		}
 
-		public GUITextureDrawer(Texture2D texture, Texture2D hotTexture,
-			Quaternion rotation = default(Quaternion), float scale = 1f) {
+		public GUITextureDrawer(Texture2D texture, Texture2D hotTexture, Quaternion rotation = default(Quaternion), float scale = 1f, float alpha = 1f) {
 			this.rotation = rotation;
 			this.texture = texture;
 			this.hotTexture = hotTexture;
 			this.scale = scale;
+		    this.alpha = alpha;
 		}
 
 	    public Material Material {
@@ -39,8 +41,12 @@ namespace toxicFork.GUIHelpers.DisposableGUI {
             {
                 material.SetTexture("_HotTex", hotTexture);
 			}
+
+	        var oldColor = Helpers.color;
+            Helpers.color = new Color(1, 1, 1, alpha);
             Helpers.DrawSquare(position, this.rotation * rotation, scale * size, material);
-		}
+	        Helpers.color = oldColor;
+	    }
 
 		public void DrawSquare(int controlID, Vector3 position, Quaternion rotation, float size) {
 			DrawSquare(position, rotation, size);

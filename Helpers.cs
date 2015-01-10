@@ -24,13 +24,15 @@ namespace toxicFork.GUIHelpers {
         }
 
         //https://harthur.github.io/brain/
-        public static Color YIQ(Color color) {
-            float r = color.r *255;
-            float g = color.g*255;
-            float b = color.b*255;
-            float yiq = (r*299 + g*587 + b*114) / 1000f;
+        public static Color YIQ(Color foregroundColor) {
+            float r = foregroundColor.r*255;
+            float g = foregroundColor.g*255;
+            float b = foregroundColor.b*255;
+            float yiq = (r*299 + g*587 + b*114)/1000f;
             return (yiq >= 128) ? Color.black : Color.white;
         }
+
+        public static Color color = Color.white;
 
         /// <summary>
         /// Draws a square on the screen that is centered around the position.
@@ -44,7 +46,7 @@ namespace toxicFork.GUIHelpers {
             Vector3 right = rotation*Vector3.right;
             Vector3 bottomLeft = position - up*halfSize - right*halfSize;
             GL.Begin(GL.QUADS);
-            GL.Color(Color.white);
+            GL.Color(color);
             GL.TexCoord2(0, 0);
             GL.Vertex(bottomLeft);
             GL.TexCoord2(0, 1);

@@ -1,3 +1,4 @@
+using System.Reflection;
 #if UNITY_EDITOR
 using toxicFork.GUIHelpers.Disposable;
 using toxicFork.GUIHelpers.DisposableGL;
@@ -19,6 +20,14 @@ namespace toxicFork.GUIHelpers {
                     alignment = TextAnchor.MiddleCenter,
                     padding = new RectOffset(0, 0, 0, 0)
                 });
+            }
+        }
+
+        public static bool AllowMultiObjectAccess {
+            get {
+                var field = typeof (Editor).GetField("m_AllowMultiObjectAccess",
+                    BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
+                return field != null && (bool) field.GetValue(null);
             }
         }
 
