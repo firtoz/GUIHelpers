@@ -2,6 +2,7 @@
 using System.Collections;
 using toxicFork.GUIHelpers.DisposableGL;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace toxicFork.GUIHelpers {
     public class Helpers {
@@ -102,6 +103,17 @@ namespace toxicFork.GUIHelpers {
                 return _alwaysVisibleGUIMaterial ??
                        (_alwaysVisibleGUIMaterial =
                            new Material(Shader.Find("GUI Helpers/GUI (Always Visible)")) { hideFlags = HideFlags.HideAndDontSave });
+            }
+        }
+
+        public static void DestroyImmediate(Object obj) {
+            if (Application.isPlaying)
+            {
+                Object.Destroy(obj);
+            }
+            else
+            {
+                Object.DestroyImmediate(obj);
             }
         }
     }
