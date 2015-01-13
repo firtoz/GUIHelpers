@@ -61,8 +61,6 @@ namespace toxicFork.GUIHelpers.Disposable {
 
 			float offset = maxWidth - state.edgePosition;
 
-			//disposables.Push(new AreaGroup(new Rect(0, 0, maxWidth, 200)));
-
 			disposables.Push(new GUICustomViewport(new Rect(0, 0, screenRect.width, screenRect.height),
 				new Rect(offset, 0, screenRect.width - offset, screenRect.height)));
 
