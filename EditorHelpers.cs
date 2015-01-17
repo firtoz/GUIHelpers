@@ -530,6 +530,37 @@ namespace toxicFork.GUIHelpers {
         public static bool IsWarm(int controlID) {
             return GUIUtility.hotControl == controlID || (GUIUtility.hotControl == 0 && HandleUtility.nearestControl == controlID);
         }
+
+        public static void OverlayLabel(Vector3 position, string text)
+        {
+            OverlayLabel(position, new GUIContent(text), GUI.skin.label);
+        }
+
+        public static void OverlayLabel(Vector3 position, Texture image)
+        {
+            OverlayLabel(position, new GUIContent(image), GUI.skin.label);
+        }
+
+        public static void OverlayLabel(Vector3 position, string text, GUIStyle style)
+        {
+            OverlayLabel(position, new GUIContent(text), style);
+        }
+
+        public static void OverlayLabel(Vector3 position, GUIContent content) {
+            OverlayLabel(position, content, GUI.skin.label);
+        }
+
+        public static void OverlayLabel(Vector3 position, GUIContent content, GUIStyle style) {
+            SceneView.OnSceneFunc del = null;
+
+            del = delegate {
+// ReSharper disable once DelegateSubtraction
+                SceneView.onSceneGUIDelegate -= del;
+                Handles.Label(position, content, style);
+            };
+
+            SceneView.onSceneGUIDelegate += del;
+        }
     }
 }
 
