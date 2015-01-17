@@ -58,6 +58,9 @@ namespace toxicFork.GUIHelpers {
         public static bool CustomHandleButton(int controlID, Vector3 buttonPosition, float buttonSize, Texture2D texture,
             Texture2D hotTexture, Color color) {
             float distance = HandleUtility.DistanceToRectangle(buttonPosition, Quaternion.identity, buttonSize*0.5f);
+
+            var buttonState = StateObject.Get<CustomButtonState>(controlID);
+
             switch (Event.current.type) {
                 case EventType.layout:
                     HandleUtility.AddControl(controlID, distance);
@@ -74,13 +77,28 @@ namespace toxicFork.GUIHelpers {
                             }
                         }
                         HandleUtility.Repaint();
+
+                        if (buttonState.hovering) {
+                            SetEditorCursor(MouseCursor.Link, controlID);
+                        }
                     }
                     break;
-                case EventType.mouseMove: {
-                    break;
-                }
+                case EventType.mouseMove:
+                    {
+                        if (HandleUtility.nearestControl == controlID) {
+                            buttonState.hovering = true;
+                        }
+                        else {
+                            buttonState.hovering = false;
+                        }
+                        break;
+                    }
+            }
+
+            switch (Event.current.GetTypeForControl(controlID)) {
                 case EventType.mouseDown:
-                    if (GUIUtility.hotControl == 0 && distance <= 0 && Event.current.button == 0) {
+                    if (HandleUtility.nearestControl == controlID && Event.current.button == 0)
+                    {
                         GUIUtility.hotControl = controlID;
 
                         Event.current.Use();
@@ -88,9 +106,11 @@ namespace toxicFork.GUIHelpers {
                     }
                     break;
                 case EventType.mouseUp:
-                    if (GUIUtility.hotControl == controlID) {
+                    if (GUIUtility.hotControl == controlID)
+                    {
                         GUIUtility.hotControl = 0;
-                        if (distance <= 0) {
+                        if (distance <= 0)
+                        {
                             Event.current.Use();
                             HandleUtility.Repaint();
                             return true;
@@ -100,6 +120,10 @@ namespace toxicFork.GUIHelpers {
             }
             return false;
             //throw new NotImplementedException();
+        }
+
+        public class CustomButtonState {
+            public bool hovering;
         }
 
         public static void SetEditorCursor(MouseCursor cursor) {
@@ -333,7 +357,7 @@ namespace toxicFork.GUIHelpers {
                         drawScale = 2;
                     }
                     else if (GUIUtility.hotControl != 0) {
-                        color.a = 0.5f;
+                        color.a *= 0.5f;
                     }
 
                     Vector2 drawNormal = normal*drawScale;
