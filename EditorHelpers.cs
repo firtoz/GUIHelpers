@@ -489,42 +489,56 @@ namespace toxicFork.GUIHelpers {
             };
         }
 
-        public static void ShowUtility(String title, Rect windowRect, Action<Action, bool> onGUIFocus) {
+        public static EditorWindow ShowUtility(String title, Rect windowRect, Action<Action, bool> onGUIFocus) {
+            HelperPopupWindow helperPopupWindow = ScriptableObject.CreateInstance<HelperPopupWindow>();
+
             EditorApplication.delayCall += () => {
-                HelperPopupWindow helperPopupWindow = ScriptableObject.CreateInstance<HelperPopupWindow>();
                 helperPopupWindow.position = windowRect;
                 helperPopupWindow.ShowUtility(title, onGUIFocus);
                 helperPopupWindow.Focus();
             };
+
+            return helperPopupWindow;
         }
 
-        public static void ShowUtility(String title, Rect windowRect, Action<Action> onGUI) {
+        public static EditorWindow ShowUtility(String title, Rect windowRect, Action<Action> onGUI)
+        {
+            HelperPopupWindow helperPopupWindow = ScriptableObject.CreateInstance<HelperPopupWindow>();
+
             EditorApplication.delayCall += () => {
-                HelperPopupWindow helperPopupWindow = ScriptableObject.CreateInstance<HelperPopupWindow>();
                 helperPopupWindow.position = windowRect;
                 helperPopupWindow.ShowUtility(title, onGUI);
             };
+
+            return helperPopupWindow;
         }
-        
-        public static void ShowUtility(String title, Rect windowRect, Action<Action> onGUI, Action onShow) {
+
+        public static EditorWindow ShowUtility(String title, Rect windowRect, Action<Action> onGUI, Action onShow)
+        {
+            HelperPopupWindow helperPopupWindow = ScriptableObject.CreateInstance<HelperPopupWindow>();
+            
             EditorApplication.delayCall += () =>
             {
-                HelperPopupWindow helperPopupWindow = ScriptableObject.CreateInstance<HelperPopupWindow>();
                 helperPopupWindow.position = windowRect;
                 helperPopupWindow.ShowUtility(title, onGUI);
                 onShow();
             };
+
+            return helperPopupWindow;
         }
 
-        public static void ShowUtility(String title, Rect windowRect, Action<Action, bool> onGUIFocus, Action onShow)
+        public static EditorWindow ShowUtility(String title, Rect windowRect, Action<Action, bool> onGUIFocus, Action onShow)
         {
+            HelperPopupWindow helperPopupWindow = ScriptableObject.CreateInstance<HelperPopupWindow>();
+
             EditorApplication.delayCall += () =>
             {
-                HelperPopupWindow helperPopupWindow = ScriptableObject.CreateInstance<HelperPopupWindow>();
                 helperPopupWindow.position = windowRect;
                 helperPopupWindow.ShowUtility(title, onGUIFocus);
                 onShow();
             };
+
+            return helperPopupWindow;
         }
 
         public static bool IsWarm(int controlID) {

@@ -13,17 +13,18 @@ namespace toxicFork.GUIHelpers {
         private bool closing = false;
 
         public HelperPopupWindow() {
-            closeAction = () => { Close(); };
+            closeAction = () => {
+                CleanClose();
+            };
         }
 
         public void OnGUI()
         {
-
+            if (closing) {
+                return;
+            }
             if (!started || EditorApplication.isCompiling) {
-                if (!closing) {
-                    closing = true;
-                    Close();
-                }
+                CleanClose();
                 return;
             }
 
@@ -34,7 +35,14 @@ namespace toxicFork.GUIHelpers {
                 onGUI(closeAction);
             }
             else {
-                Close();
+                CleanClose();
+            }
+        }
+
+        private void CleanClose() { 
+            if (!closing) {
+                closing = true;
+                EditorApplication.delayCall += Close;
             }
         }
 
