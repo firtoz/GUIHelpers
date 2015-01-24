@@ -16,9 +16,7 @@ namespace toxicFork.GUIHelpers {
 
         public static GUIStyle FontWithBackgroundStyle {
             get {
-                return _fontWithBackgroundStyle ?? (_fontWithBackgroundStyle = new GUIStyle(GUI.skin.box) {
-                    alignment = TextAnchor.MiddleCenter,
-                    padding = new RectOffset(0, 0, 0, 0)
+                return _fontWithBackgroundStyle ?? (_fontWithBackgroundStyle = new GUIStyle(GUI.skin.textArea) {
                 });
             }
         }
