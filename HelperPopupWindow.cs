@@ -9,8 +9,8 @@ namespace toxicFork.GUIHelpers {
         private Action<Action, bool> onGUIFocus;
 
         private readonly Action closeAction;
-        private bool started = false;
-        private bool closing = false;
+        private bool started;
+        private bool closing;
 
         public HelperPopupWindow() {
             closeAction = () => {
@@ -42,8 +42,23 @@ namespace toxicFork.GUIHelpers {
         private void CleanClose() { 
             if (!closing) {
                 closing = true;
-                EditorApplication.delayCall += Close;
+                EditorApplication.delayCall += () => {
+                    if (!disabled) {
+                        Close();
+                    }
+                };
             }
+        }
+
+        [SerializeField]
+        private bool disabled = true;
+
+        public void OnEnable() {
+            disabled = false;
+        }
+
+        public void OnDisable() {
+            disabled = true;
         }
 
         public void ShowAsDropDown(Action<Action> onGUI, Rect windowRect) {
