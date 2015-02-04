@@ -1,5 +1,4 @@
-﻿#if UNITY_EDITOR
-using System;
+﻿using System;
 using System.Collections.Generic;
 using toxicFork.GUIHelpers.DisposableEditorGUI;
 using UnityEditor;
@@ -36,4 +35,3 @@ public class PersistentFoldoutHelper {
         }
     }
 }
-#endif

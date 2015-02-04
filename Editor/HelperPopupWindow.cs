@@ -1,5 +1,4 @@
-﻿#if UNITY_EDITOR
-using System;
+﻿using System;
 using UnityEditor;
 using UnityEngine;
 
@@ -103,4 +102,3 @@ namespace toxicFork.GUIHelpers {
         }
     }
 }
-#endif

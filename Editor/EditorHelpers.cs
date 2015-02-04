@@ -1,14 +1,13 @@
-using System.Reflection;
-#if UNITY_EDITOR
-using toxicFork.GUIHelpers.Disposable;
-using toxicFork.GUIHelpers.DisposableGL;
-using MaterialProperty = toxicFork.GUIHelpers.Disposable.MaterialProperty;
 using System;
-using toxicFork.GUIHelpers.DisposableGUI;
-using toxicFork.GUIHelpers.DisposableHandles;
 using UnityEditor;
 using UnityEngine;
+using System.Reflection;
+using toxicFork.GUIHelpers.DisposableGUI;
+using toxicFork.GUIHelpers.DisposableHandles;
+using toxicFork.GUIHelpers.Disposable;
+using toxicFork.GUIHelpers.DisposableGL;
 using Object = UnityEngine.Object;
+using MaterialProperty = toxicFork.GUIHelpers.Disposable.MaterialProperty;
 
 namespace toxicFork.GUIHelpers {
     public class EditorHelpers : Helpers {
@@ -575,5 +574,3 @@ namespace toxicFork.GUIHelpers {
         }
     }
 }
-
-#endif

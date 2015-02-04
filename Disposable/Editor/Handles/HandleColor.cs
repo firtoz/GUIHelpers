@@ -1,4 +1,3 @@
-#if UNITY_EDITOR
 using System;
 using UnityEditor;
 using UnityEngine;
@@ -21,4 +20,3 @@ namespace toxicFork.GUIHelpers.DisposableHandles {
 		}
 	}
 }
-#endif

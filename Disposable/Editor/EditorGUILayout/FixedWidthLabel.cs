@@ -1,4 +1,3 @@
-#if UNITY_EDITOR
 using toxicFork.GUIHelpers.DisposableEditorGUI;
 using UnityEditor;
 using System;
@@ -27,4 +26,3 @@ namespace toxicFork.GUIHelpers.DisposableEditorGUILayout {
 		}
 	}
 }
-#endif
