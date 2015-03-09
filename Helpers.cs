@@ -16,7 +16,7 @@ namespace toxicFork.GUIHelpers {
         {
             using (new GLMatrix())
             {
-                for (int i = 0; i < material.passCount; i++)
+                for (var i = 0; i < material.passCount; i++)
                 {
                     material.SetPass(i);
                     DrawSquare(position, rotation, size);
@@ -26,10 +26,10 @@ namespace toxicFork.GUIHelpers {
 
         //https://harthur.github.io/brain/
         public static Color YIQ(Color foregroundColor) {
-            float r = foregroundColor.r*255;
-            float g = foregroundColor.g*255;
-            float b = foregroundColor.b*255;
-            float yiq = (r*299 + g*587 + b*114)/1000f;
+            var r = foregroundColor.r*255;
+            var g = foregroundColor.g*255;
+            var b = foregroundColor.b*255;
+            var yiq = (r*299 + g*587 + b*114)/1000f;
             return (yiq >= 128) ? Color.black : Color.white;
         }
 
@@ -42,10 +42,10 @@ namespace toxicFork.GUIHelpers {
         /// <param name="rotation">The rotation of the square. Does not work well with any rotation other than z.</param>
         /// <param name="size">The size of the square, in world coordinates.</param>
         public static void DrawSquare(Vector3 position, Quaternion rotation, float size) {
-            float halfSize = size*.5f;
-            Vector3 up = rotation*Vector3.up;
-            Vector3 right = rotation*Vector3.right;
-            Vector3 bottomLeft = position - up*halfSize - right*halfSize;
+            var halfSize = size*.5f;
+            var up = rotation*Vector3.up;
+            var right = rotation*Vector3.right;
+            var bottomLeft = position - up*halfSize - right*halfSize;
             GL.Begin(GL.QUADS);
             GL.Color(color);
             GL.TexCoord2(0, 0);

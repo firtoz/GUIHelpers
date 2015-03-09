@@ -12,8 +12,8 @@ namespace toxicFork.GUIHelpers {
         /// <param name="point">The world coordinates of the point.</param>
         /// <returns>The point in the object's local space.</returns>
         public static Vector2 TransformPoint(Transform transform, Vector2 point) {
-            Vector2 rotatedScaledPoint = TransformVector(transform, point);
-            Vector2 translatedRotatedScaledPoint = (Vector2) transform.position + rotatedScaledPoint;
+            var rotatedScaledPoint = TransformVector(transform, point);
+            var translatedRotatedScaledPoint = (Vector2) transform.position + rotatedScaledPoint;
             return translatedRotatedScaledPoint;
         }
 
@@ -30,21 +30,21 @@ namespace toxicFork.GUIHelpers {
         /// <param name="vector">The world-space vector to transform.</param>
         /// <returns>The vector in the object's local space.</returns>
         public static Vector2 TransformVector(Transform transform, Vector2 vector) {
-            Vector2 scaledPoint = Vector2.Scale(vector, transform.lossyScale);
-            float angle = transform.rotation.eulerAngles.z;
+            var scaledPoint = Vector2.Scale(vector, transform.lossyScale);
+            var angle = transform.rotation.eulerAngles.z;
             Vector2 rotatedScaledPoint = Quaternion.AngleAxis(angle, Vector3.forward)*scaledPoint;
             return rotatedScaledPoint;
         }
 
         public static Vector2 InverseTransformPoint(Transform transform, Vector2 point) {
-            Vector2 rotatedScaledVector = point - (Vector2) transform.position;
+            var rotatedScaledVector = point - (Vector2) transform.position;
             return InverseTransformVector(transform, rotatedScaledVector);
         }
 
         public static Vector2 InverseTransformVector(Transform transform, Vector2 vector) {
-            float angle = transform.rotation.eulerAngles.z;
+            var angle = transform.rotation.eulerAngles.z;
             Vector2 scaledVector = Quaternion.AngleAxis(-angle, Vector3.forward)*vector;
-            Vector2 inverseTransformVector = Vector2.Scale(scaledVector, new Vector2(1/transform.lossyScale.x, 1/transform.lossyScale.y));
+            var inverseTransformVector = Vector2.Scale(scaledVector, new Vector2(1/transform.lossyScale.x, 1/transform.lossyScale.y));
             return inverseTransformVector;
         }
 
@@ -66,13 +66,13 @@ namespace toxicFork.GUIHelpers {
 
         public static Vector2 ClosestPointToRay(Ray ray, Vector2 point) {
             //http://pastie.org/1066490
-            float t = Vector2.Dot(point - (Vector2) ray.origin, ray.direction);
+            var t = Vector2.Dot(point - (Vector2) ray.origin, ray.direction);
 
             return ray.GetPoint(t);
         }
 
         public static Vector2 Intersect2DPlane(Ray ray) {
-            float d = -(Vector3.Dot(ray.origin, Vector3.back)+0)/Vector3.Dot(ray.direction, Vector3.back);
+            var d = -(Vector3.Dot(ray.origin, Vector3.back)+0)/Vector3.Dot(ray.direction, Vector3.back);
             return ray.GetPoint(d);
         }
         
@@ -83,12 +83,12 @@ namespace toxicFork.GUIHelpers {
 #endif
 
         public static float DistanceAlongLine(Ray ray, Vector2 wantedPosition) {
-            Ray normalFromCenter = new Ray(ray.origin, new Vector2(-ray.direction.y, ray.direction.x));
-            float distance = DistanceToLine(normalFromCenter, wantedPosition);
+            var normalFromCenter = new Ray(ray.origin, new Vector2(-ray.direction.y, ray.direction.x));
+            var distance = DistanceToLine(normalFromCenter, wantedPosition);
 
-            Vector2 wantedDirection = (wantedPosition - (Vector2)ray.origin).normalized;
+            var wantedDirection = (wantedPosition - (Vector2)ray.origin).normalized;
 
-            float dot = Vector2.Dot(wantedDirection, ray.direction);
+            var dot = Vector2.Dot(wantedDirection, ray.direction);
             if (dot < 0)
             {
                 distance *= -1;

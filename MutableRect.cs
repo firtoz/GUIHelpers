@@ -17,7 +17,7 @@ namespace toxicFork.GUIHelpers {
 		}
 
 		public static implicit operator Rect(MutableRect r) {
-			float y = r.y;
+			var y = r.y;
 			if (r.autoNewLine) {
 				r.y += r.height;
 			}

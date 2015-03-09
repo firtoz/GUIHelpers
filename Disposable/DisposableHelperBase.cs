@@ -12,7 +12,7 @@ namespace toxicFork.GUIHelpers.Disposable {
 		protected StackDisposeStrategy stackDisposeStrategy = StackDisposeStrategy.AfterCleanup;
 
 		public void Dispose() {
-			bool beforeCleanup = stackDisposeStrategy == StackDisposeStrategy.BeforeCleanup;
+			var beforeCleanup = stackDisposeStrategy == StackDisposeStrategy.BeforeCleanup;
 			if (beforeCleanup) {
 				Cleanup();
 			}

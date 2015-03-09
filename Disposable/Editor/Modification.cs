@@ -12,7 +12,7 @@ namespace toxicFork.GUIHelpers.DisposableEditor
             EditorHelpers.RecordUndo(action, objects);
         }
         public void Dispose() {
-            foreach (Object o in objects) {
+            foreach (var o in objects) {
                 EditorUtility.SetDirty(o);
             }
         }

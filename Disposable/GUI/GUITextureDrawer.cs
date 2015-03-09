@@ -30,13 +30,13 @@ namespace toxicFork.GUIHelpers.DisposableGUI {
 
         public Material Material {
             get {
-                Material material = alwaysVisible ? Helpers.AlwaysVisibleGUIMaterial : Helpers.GUIMaterial;
+                var material = alwaysVisible ? Helpers.AlwaysVisibleGUIMaterial : Helpers.GUIMaterial;
                 return material;
             }
         }
 
         public void DrawSquare(Vector3 position, Quaternion rotation, float size) {
-            Material material = Material;
+            var material = Material;
             material.SetTexture(0, texture);
             if (hotTexture != null && material.HasProperty("_HotTex")) {
                 material.SetTexture("_HotTex", hotTexture);
