@@ -8,7 +8,7 @@ public class FoldoutHelper {
     private readonly Dictionary<string, bool> foldoutStates = new Dictionary<string, bool>();
 
     public void Foldout(string name, GUIContent content, Action action) {
-        bool currentStatus = foldoutStates.ContainsKey(name) && foldoutStates[name];
+        var currentStatus = foldoutStates.ContainsKey(name) && foldoutStates[name];
 
         currentStatus = EditorGUILayout.Foldout(currentStatus, content);
 

@@ -14,7 +14,7 @@ public class PersistentFoldoutHelper {
 
     public void Foldout(string name, GUIContent content, Action action) {
         bool currentStatus;
-        string keyName = keyPrefix + "." + name;
+        var keyName = keyPrefix + "." + name;
         if (!foldoutStates.ContainsKey(name)) {
             foldoutStates[name] = EditorPrefs.GetBool(keyName, false);
         }

@@ -14,12 +14,12 @@ namespace toxicFork.GUIHelpers.Disposable {
 		private readonly PulloutState state;
 
 		public Pullout(Rect screenRect, float minWidth, bool scrollable = false, Color? backgroundColor = null) {
-			float maxWidth = screenRect.width;
+			var maxWidth = screenRect.width;
 
 			minWidth = Mathf.Max(minWidth, 0);
 			minWidth = Mathf.Min(maxWidth, minWidth);
 
-			int controlID = GUIUtility.GetControlID(FocusType.Keyboard, screenRect);
+			var controlID = GUIUtility.GetControlID(FocusType.Keyboard, screenRect);
 			state = StateObject.Get<PulloutState>(controlID);
 			state.Tick();
 
@@ -27,7 +27,7 @@ namespace toxicFork.GUIHelpers.Disposable {
 				state.Setup(backgroundColor.Value);
 			}
 
-			Vector2 mousePosition = Event.current.mousePosition;
+			var mousePosition = Event.current.mousePosition;
 			if (screenRect.Contains(mousePosition) && mousePosition.x - screenRect.x < state.edgePosition) {
 				if (!state.mouseIn && (GUIUtility.hotControl == 0 || GUIUtility.hotControl == controlID)) {
 					state.mouseIn = true;
@@ -58,7 +58,7 @@ namespace toxicFork.GUIHelpers.Disposable {
 			//groupArea = new GroupArea(new Rect(screenRect.x, screenRect.y, screenRect.width, screenRect.height));
 
 
-			float offset = maxWidth - state.edgePosition;
+			var offset = maxWidth - state.edgePosition;
 
 			disposables.Push(new GUICustomViewport(new Rect(0, 0, screenRect.width, screenRect.height),
 				new Rect(offset, 0, screenRect.width - offset, screenRect.height)));
@@ -196,8 +196,8 @@ namespace toxicFork.GUIHelpers.Disposable {
 			}
 
 			private void Update() {
-				double currentTime = EditorApplication.timeSinceStartup;
-				float deltaTime = (float) (currentTime - time);
+				var currentTime = EditorApplication.timeSinceStartup;
+				var deltaTime = (float) (currentTime - time);
 				edgePosition = Mathf.Lerp(edgePosition, wantedEdgePosition, Mathf.Clamp(10f*deltaTime, 0f, 1f));
 				time = currentTime;
 
