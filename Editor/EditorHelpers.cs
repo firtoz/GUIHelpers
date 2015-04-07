@@ -105,8 +105,8 @@ namespace toxicFork.GUIHelpers {
                     if (GUIUtility.hotControl == controlID)
                     {
                         GUIUtility.hotControl = 0;
-                        if (distance <= 0)
-                        {
+                        if (distance <= 0) {
+                            GUI.changed = true;
                             Event.current.Use();
                             HandleUtility.Repaint();
                             return true;
