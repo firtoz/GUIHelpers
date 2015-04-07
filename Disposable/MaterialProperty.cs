@@ -1,9 +1,10 @@
 using System;
 using UnityEngine;
+using Object = System.Object;
 
 namespace toxicFork.GUIHelpers.Disposable {
 	public class MaterialProperty : IDisposable {
-		private readonly System.Object value;
+		private readonly Object value;
 		private readonly Material material;
 		private readonly string propertyName;
 

@@ -1,7 +1,7 @@
 #if UNITY_EDITOR
+using System;
 using toxicFork.GUIHelpers.Disposable;
 using UnityEditor;
-using System;
 using UnityEngine;
 
 namespace toxicFork.GUIHelpers.DisposableEditorGUILayout {

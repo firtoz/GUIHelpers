@@ -1,6 +1,6 @@
 #if UNITY_EDITOR
-using UnityEditor;
 using System;
+using UnityEditor;
 
 namespace toxicFork.GUIHelpers.DisposableEditorGUI
 {

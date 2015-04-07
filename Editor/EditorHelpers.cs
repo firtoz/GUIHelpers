@@ -1,22 +1,21 @@
 using System;
-using UnityEditor;
-using UnityEngine;
 using System.Reflection;
-using toxicFork.GUIHelpers.DisposableGUI;
-using toxicFork.GUIHelpers.DisposableHandles;
 using toxicFork.GUIHelpers.Disposable;
 using toxicFork.GUIHelpers.DisposableGL;
-using Object = UnityEngine.Object;
+using toxicFork.GUIHelpers.DisposableGUI;
+using toxicFork.GUIHelpers.DisposableHandles;
+using UnityEditor;
+using UnityEngine;
 using MaterialProperty = toxicFork.GUIHelpers.Disposable.MaterialProperty;
+using Object = UnityEngine.Object;
 
 namespace toxicFork.GUIHelpers {
-    public class EditorHelpers : Helpers {
+    public class EditorHelpers {
         private static GUIStyle _fontWithBackgroundStyle;
 
         public static GUIStyle FontWithBackgroundStyle {
             get {
-                return _fontWithBackgroundStyle ?? (_fontWithBackgroundStyle = new GUIStyle(GUI.skin.textArea) {
-                });
+                return _fontWithBackgroundStyle ?? (_fontWithBackgroundStyle = new GUIStyle(GUI.skin.textArea));
             }
         }
 
@@ -238,10 +237,10 @@ namespace toxicFork.GUIHelpers {
             }
             var handleColor = Handles.color;
             if (alwaysVisible) {
-                AlwaysVisibleVertexGUIMaterial.SetPass(0);
+                Helpers.AlwaysVisibleVertexGUIMaterial.SetPass(0);
             }
             else {
-                VertexGUIMaterial.SetPass(0);
+                Helpers.VertexGUIMaterial.SetPass(0);
             }
 
             using (new GLMatrix()) {
@@ -287,7 +286,7 @@ namespace toxicFork.GUIHelpers {
 
         public static void DrawThickLineWithOutline(Vector3 a, Vector3 b, float mainThickness, float outlineThickness,
             bool alwaysVisible = false) {
-            var backgroundColor = YIQ(Handles.color);
+            var backgroundColor = Helpers.YIQ(Handles.color);
             backgroundColor.a = Handles.color.a;
             using (new HandleColor(backgroundColor)) {
                 DrawThickLine(a, b, mainThickness + outlineThickness, alwaysVisible);
@@ -380,7 +379,7 @@ namespace toxicFork.GUIHelpers {
                         if (arrow) {
                             Vector3 directionOffset = direction*handleSize*drawScale*0.5f;
 
-                            var backgroundColor = YIQ(Handles.color);
+                            var backgroundColor = Helpers.YIQ(Handles.color);
                             backgroundColor.a = Handles.color.a;
 //
                             using (new HandleColor(backgroundColor)) {

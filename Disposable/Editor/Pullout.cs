@@ -1,8 +1,8 @@
+using System;
 using toxicFork.GUIHelpers.DisposableEditorGUILayout;
 using toxicFork.GUIHelpers.DisposableGUI;
 using toxicFork.GUIHelpers.DisposableGUILayout;
 using toxicFork.GUIHelpers.DisposableHandles;
-using System;
 using UnityEditor;
 using UnityEngine;
 

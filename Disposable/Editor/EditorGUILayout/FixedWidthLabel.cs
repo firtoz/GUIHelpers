@@ -1,6 +1,6 @@
+using System;
 using toxicFork.GUIHelpers.DisposableEditorGUI;
 using UnityEditor;
-using System;
 using UnityEngine;
 
 namespace toxicFork.GUIHelpers.DisposableEditorGUILayout {
