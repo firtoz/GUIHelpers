@@ -89,7 +89,7 @@ namespace toxicFork.GUIHelpers {
         public void ShowUtility(String title, Action<Action, bool> onGUIFocus) {
             started = true;
             this.onGUIFocus = onGUIFocus;
-            this.title = title;
+            titleContent = new GUIContent(title);
             ShowUtility();
         }
 
@@ -97,7 +97,7 @@ namespace toxicFork.GUIHelpers {
         {
             started = true;
             this.onGUI = onGUI;
-            this.title = title;
+            titleContent = new GUIContent(title);
             ShowUtility();
         }
     }
